@@ -12,7 +12,7 @@ class Grafo{
     
     public:
         Grafo();
-        void addVerticie(int id, std::vector<int> vizinhos);
+        void addVerticie(int id, std::vector<std::tuple<int,int>> vizinhos);
         void printVertices(); // para deixar meu debug mais facil
 };
 

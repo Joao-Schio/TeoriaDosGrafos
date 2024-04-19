@@ -10,7 +10,7 @@ Grafo::Grafo(){
     numArestas = 0;
 }
 
-void Grafo::addVerticie(int id, std::vector<int> vizinhos){
+void Grafo::addVerticie(int id, std::vector<std::tuple<int,int>> vizinhos){
     Verticie v(id, vizinhos);
     vertices.push_back(v);
     numVertices++;
@@ -19,10 +19,10 @@ void Grafo::addVerticie(int id, std::vector<int> vizinhos){
 
 void Grafo::printVertices(){
     for(unsigned i = 0; i < vertices.size(); i++){
+        std::vector<std::tuple<int,int>> vizinhos = vertices[i].getVizinhos();
         std::cout << "Verticie " << vertices[i].getId() << " tem vizinhos: ";
-        std::vector<int> vizinhos = vertices[i].getVizinhos();
         for(unsigned j = 0; j < vizinhos.size(); j++){
-            std::cout << vizinhos[j] << " ";
+            std::cout << std::get<0>(vizinhos[j]) << " " << "com custo " << std::get<1>(vizinhos[j]) << " ";
         }
         std::cout << std::endl;
     }

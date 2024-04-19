@@ -1,17 +1,17 @@
 #include <iostream>
 #include <vector>
-
+#include <tuple>
 
 
 class Verticie{
     private:
         int id;
-        std::vector<int> vizinhos;
+        std::vector<std::tuple<int,int>> vizinhos;
     public:
         Verticie();
         Verticie(int id);
-        Verticie(int id, std::vector<int> vizinhos);
-        void addVizinho(int id);
+        Verticie(int id, std::vector<std::tuple<int,int>> vizinhos);
+        void addVizinho(std::tuple<int,int> aresta);
         int getId();
-        std::vector<int> getVizinhos();
+        std::vector<std::tuple<int,int>> getVizinhos();
 };
