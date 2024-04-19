@@ -30,6 +30,9 @@ void leGrafo(std::string nomeArquivo, Grafo *g){
             std::tuple<int,int> aresta = std::make_tuple(vizinho, custo);
             g -> addVizinho(id, aresta);
         }
+        else if(inicio == 'T'){
+            break;
+        }
     }
     fclose(arquivo);
 }
