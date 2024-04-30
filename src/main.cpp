@@ -7,6 +7,10 @@
 
 void leGrafo(std::string nomeArquivo, Grafo *g){
     FILE *arquivo = fopen(nomeArquivo.c_str(), "r");
+    if(arquivo == NULL){
+        std::cout << "Erro ao abrir o arquivo" << std::endl;
+        exit(1);
+    }
     char inicio = 'i';
     while(fscanf(arquivo, "%c", &inicio) != EOF){
         if(inicio == 'I'){
