@@ -45,6 +45,12 @@ void leGrafo(std::string nomeArquivo, Grafo *g){
 
 int main(int argc, char **argv){
 
+    if(argc != 2){
+        std::cout << "Erro: Argumentos invalidos" << std::endl;
+        std::cout << "Uso: " << argv[0] << " <nome do arquivo>" << std::endl;
+        exit(1);
+    }
+
     std::string nomeArquivo = argv[1];
 
     Grafo g = Grafo();
