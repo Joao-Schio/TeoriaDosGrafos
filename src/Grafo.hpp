@@ -18,6 +18,8 @@ class Grafo{
         void setNumArestas(int numArestas);
         void addVizinho(int id, std::tuple<int,int> aresta);
         void printVertices(); // para deixar meu debug mais facil
+        unsigned int getNumVertices();
+        Verticie getVerticie(int id);
 };
 
 

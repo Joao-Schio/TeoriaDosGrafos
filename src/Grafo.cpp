@@ -50,3 +50,17 @@ void Grafo::addVizinho(int id, std::tuple<int,int> aresta){
         }
     }
 }
+
+unsigned int Grafo::getNumVertices(){
+    return this -> numVertices;
+}
+
+
+Verticie Grafo::getVerticie(int id){
+    for(unsigned i = 0; i < vertices.size(); i++){
+        if(vertices[i].getId() == id){
+            return vertices[i];
+        }
+    }
+    return Verticie(-1);
+}
