@@ -8,20 +8,22 @@
 
 Verticie::Verticie(){
     this -> id = -1;
-    this -> arcos = std::vector<std::tuple<int,int>>();
+    this -> arcos = std::vector<std::tuple<Verticie,int>>();
 }
 
-Verticie::Verticie(int id){
+Verticie::Verticie(int id, int grauEntrada, int grauSaida){
     this -> id = id;
-    this -> arcos = std::vector<std::tuple<int,int>>();
+    this -> grauEntrada = grauEntrada;
+    this -> grauSaida = grauSaida;
+    this -> arcos = std::vector<std::tuple<Verticie,int>>();
 }
 
-Verticie::Verticie(int id, std::vector<std::tuple<int,int>> arcos){
+Verticie::Verticie(int id, std::vector<std::tuple<Verticie,int>> arcos){
     this -> id = id;
     this -> arcos = arcos;
 }
 
-void Verticie::addArco(std::tuple<int,int> arco){
+void Verticie::addArco(std::tuple<Verticie,int> arco){
     this -> arcos.push_back(arco);
 }
 
@@ -29,7 +31,7 @@ int Verticie::getId(){
     return this -> id;
 }
 
-std::vector<std::tuple<int,int>> Verticie::getArcos(){
+std::vector<std::tuple<Verticie,int>> Verticie::getArcos(){
     return this -> arcos;
 }
 

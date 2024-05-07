@@ -21,18 +21,15 @@ void leGrafo(std::string nomeArquivo, Grafo *g){
         }
 
         else if(inicio == 'N'){
-            int id;
-            fscanf(arquivo, "%d", &id);
-            g -> addVerticie(id);
-            int x, y;
-            fscanf(arquivo, "%d %d", &x, &y);
+            int id, gEntrada, gSaida;
+            fscanf(arquivo, "%d %d %d", &id, &gEntrada, &gSaida);
+            g -> addVerticie(id,gEntrada, gSaida);
         }
 
         else if(inicio == 'E'){
             int id, vizinho, custo;
             fscanf(arquivo, "%d %d %d", &id, &vizinho, &custo);
-            std::tuple<int,int> aresta = std::make_tuple(vizinho, custo);
-            g -> addVizinho(id, aresta);
+            g -> addArco(id,vizinho,custo);
         }
         else if(inicio == 'T'){
             break;
@@ -45,14 +42,14 @@ void leGrafo(std::string nomeArquivo, Grafo *g){
 
 int main(int argc, char **argv){
 
-    if(argc != 2){
-        std::cout << "Erro: Argumentos invalidos" << std::endl;
-        std::cout << "Uso: " << argv[0] << " <nome do arquivo>" << std::endl;
-        exit(1);
-    }
-
-    std::string nomeArquivo = argv[1];
-
+    //if(argc != 2){
+    //    std::cout << "Erro: Argumentos invalidos" << std::endl;
+    //    std::cout << "Uso: " << argv[0] << " <nome do arquivo>" << std::endl;
+    //    exit(1);
+    //}
+    std::cout << "comecou" << std::endl;
+    std::string nomeArquivo ;//= argv[1];
+    nomeArquivo = "g1.txt";
     Grafo g = Grafo();
 
     leGrafo(nomeArquivo, &g);

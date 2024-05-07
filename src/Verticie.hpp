@@ -15,18 +15,21 @@
 class Verticie{
     private:
         int id; // identificador do verticie
-        std::vector<std::tuple<int,int>> arcos; 
+        std::vector<std::tuple<Verticie,int>> arcos; 
         /**
          * ja que o verticie ja tem o seu identificador não é preciso usar um trio ordenado
          * então eu vou usar uma tupla com duas posições como um par ordenado
          * onde a primeira posição é o ID do verticie destino e a segunda é
          * o custo do arco
         */
+       int grauEntrada;
+       int grauSaida;
     public:
         Verticie();
-        Verticie(int id);
-        Verticie(int id, std::vector<std::tuple<int,int>> arcos);
-        void addArco(std::tuple<int,int> aresta);
+        Verticie(int id, int grauEntrada, int grauSaida);
+        Verticie(int id, std::vector<std::tuple<Verticie,int>> arcos);
+        void addArco(std::tuple<Verticie,int> aresta);
         int getId();
-        std::vector<std::tuple<int,int>> getArcos();
+        std::vector<std::tuple<Verticie,int>> getArcos();
+
 };

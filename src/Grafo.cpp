@@ -13,7 +13,7 @@ Grafo::Grafo(){
     numArestas = 0;
 }
 
-void Grafo::addVerticie(int id, std::vector<std::tuple<int,int>> vizinhos){
+void Grafo::addVerticie(int id, std::vector<std::tuple<Verticie,int>> vizinhos){
     /**
      * funcao basica para adicionar verticies
     */
@@ -28,10 +28,10 @@ void Grafo::printVertices(){
      * funcao basica para printar o grafo
     */
     for(unsigned i = 0; i < vertices.size(); i++){
-        std::vector<std::tuple<int,int>> vizinhos = this -> vertices[i].getVizinhos();
+        std::vector<std::tuple<Verticie,int>> arcos = this -> vertices[i].getArcos();
         std::cout << "Verticie " << vertices[i].getId() << " tem vizinhos: ";
-        for(unsigned j = 0; j < vizinhos.size(); j++){
-            std::cout << std::get<0>(vizinhos[j]) << " " << "com custo " << std::get<1>(vizinhos[j]) << " ";
+        for(unsigned j = 0; j < arcos.size(); j++){
+            std::cout << std::get<0>(arcos[j]).getId() << " " << "com custo " << std::get<1>(arcos[j]) << " ";
         }
         std::cout << std::endl;
     }
@@ -47,18 +47,20 @@ void Grafo::setNumArestas(int numArestas){
     this -> numArestas = numArestas;
 }
 
-void Grafo::addVerticie(int id){
+void Grafo::addVerticie(int id, int grauEntrada, int grauSaida){
     // funcao basica para adicionar um verticie
-    Verticie v(id);
+    Verticie v(id,grauEntrada, grauSaida);
     this -> vertices.push_back(v);
     this -> numVertices++;
 }
 
-void Grafo::addVizinho(int id, std::tuple<int,int> aresta){
+void Grafo::addArco(int id, int idFim, int custo){
 
-    for(unsigned i = 0; i < vertices.size(); i++){
-        if(vertices[i].getId() == id){ // como a ordem dos verticies nao é necessariamente na ordem do ID é  precisp procurar onde ele está
-            vertices[i].addVizinho(aresta);
+    Verticie fim = this -> getVerticie(idFim);
+    std::tuple<Verticie,int> arco = std::make_tuple(fim,custo);
+    for(unsigned i = 0 ; i < this -> getNumVertices(); i++){
+        if(this -> vertices.at(i).getId() == id){
+            this -> vertices[i].addArco(arco);
             return;
         }
     }
@@ -76,5 +78,5 @@ Verticie Grafo::getVerticie(int id){
             return vertices[i];
         }
     }
-    return Verticie(-1); // os ids sao sempre positivos portanto -1 significa que falhou
+    return Verticie(-1,0,0); // os ids sao sempre positivos portanto -1 significa que falhou
 }
