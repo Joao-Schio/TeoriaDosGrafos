@@ -8,28 +8,28 @@
 
 Verticie::Verticie(){
     this -> id = -1;
-    this -> vizinhos = std::vector<std::tuple<int,int>>();
+    this -> arcos = std::vector<std::tuple<int,int>>();
 }
 
 Verticie::Verticie(int id){
     this -> id = id;
-    this -> vizinhos = std::vector<std::tuple<int,int>>();
+    this -> arcos = std::vector<std::tuple<int,int>>();
 }
 
-Verticie::Verticie(int id, std::vector<std::tuple<int,int>> vizinhos){
+Verticie::Verticie(int id, std::vector<std::tuple<int,int>> arcos){
     this -> id = id;
-    this -> vizinhos = vizinhos;
+    this -> arcos = arcos;
 }
 
-void Verticie::addVizinho(std::tuple<int,int> aresta){
-    this -> vizinhos.push_back(aresta);
+void Verticie::addArco(std::tuple<int,int> arco){
+    this -> arcos.push_back(arco);
 }
 
 int Verticie::getId(){
     return this -> id;
 }
 
-std::vector<std::tuple<int,int>> Verticie::getVizinhos(){
-    return this -> vizinhos;
+std::vector<std::tuple<int,int>> Verticie::getArcos(){
+    return this -> arcos;
 }
 

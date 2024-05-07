@@ -3,12 +3,21 @@
 #include "Verticie.hpp"
 
 
+/**
+ * Sabemos que matematicamente um grafo é o par ordenado entre o conjunto de verticies V
+ * e o conjunto de arestas A, sendo definido como
+ * G = (V,A)
+ * 
+*/
+
+
 class Grafo{
 
     private:
-        std::vector<Verticie> vertices;
-        int numVertices;
-        int numArestas;
+
+        std::vector<Verticie> vertices; // Conjunto de verticies
+        int numVertices; // Ordem do grafo
+        int numArestas; 
     
     public:
         Grafo();
@@ -17,7 +26,7 @@ class Grafo{
         void setNumVertices(int numVertices);
         void setNumArestas(int numArestas);
         void addVizinho(int id, std::tuple<int,int> aresta);
-        void printVertices(); // para deixar meu debug mais facil
+        void printVertices(); 
         unsigned int getNumVertices();
         Verticie getVerticie(int id);
 };
