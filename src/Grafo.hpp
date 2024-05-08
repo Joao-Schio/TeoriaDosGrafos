@@ -29,6 +29,7 @@ class Grafo{
         void printVertices(); 
         unsigned int getNumVertices();
         Verticie getVerticie(int id);
+        std::vector<Verticie> getVerticesVetor();
 };
 
 

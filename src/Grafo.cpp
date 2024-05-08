@@ -80,3 +80,8 @@ Verticie Grafo::getVerticie(int id){
     }
     return Verticie(-1,0,0); // os ids sao sempre positivos portanto -1 significa que falhou
 }
+
+std::vector<Verticie> Grafo::getVerticesVetor(){
+    // coloquei o nome de vetor para deixar mais clara a diferenca entre o nome das funcoes
+    return this -> vertices;
+}
