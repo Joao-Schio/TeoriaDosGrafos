@@ -4,7 +4,6 @@
 
 
 
-
 void leGrafo(std::string nomeArquivo, Grafo *g){
     FILE *arquivo = fopen(nomeArquivo.c_str(), "r");
     if(arquivo == NULL){
@@ -39,22 +38,122 @@ void leGrafo(std::string nomeArquivo, Grafo *g){
 }
 
 
+void merge(std::vector<Verticie> &v, int inicio,int meio, int fim){
+    int tamanho1 = meio - inicio + 1;
+    int tamanho2 = fim - meio;
+    std::vector<Verticie> aux1(tamanho1);
+    std::vector<Verticie> aux2(tamanho2);
+
+    for(int i = 0; i < tamanho1; i++){
+        aux1[i] = v.at(i + inicio);
+    }
+    for(int i = 0; i < tamanho2; i++){
+        aux2[i] = v.at(1 + meio + i);
+    }
+
+    int i = 0, j = 0, k = inicio;
+
+    while(i < tamanho1 && j < tamanho2){
+        if(aux1[i].getId() > aux2[j].getId()){
+            v.at(k) = aux2[j];
+            j++;
+        }
+        else{
+            v.at(k) = aux1[i];
+            i++;
+        }
+        k++;
+    }   
+    while(j < tamanho2){
+        v.at(k) = aux2[j];
+        j++;
+        k++;
+    }
+    while(i < tamanho1){
+        v.at(k) = aux1[i];
+        i++;
+        k++;
+    }
+}
+
+
+
+void mergesort(std::vector<Verticie> &v, int inicio, int fim){
+    if(fim > inicio){
+        int meio = (fim + inicio) / 2;
+        mergesort(v,inicio,meio);
+        mergesort(v, meio + 1, fim);
+        merge(v,inicio,meio,fim);
+    }
+}
+
+
+
+std::vector<Grafo> bellmanford(Grafo g, Verticie v){
+    std::vector<Verticie> anterior(g.getNumVertices());
+    std::vector<int> distancia(g.getNumVertices());
+    std::vector<Verticie> O = g.getVerticesVetor();
+
+
+    /**
+     * minha ideia eh usar os vetores como se fossem uma tabela de dispersao
+     * com a funcao de dispersao sendo f(x) = x - 1
+     * para um acesso mais rapido
+     * diferentemente do vetor O que a ordem importa
+     * 
+     * anterior vai receber o verticie anterior a ele no caminho
+     * e distancia vai receber o valor de v ate ele
+     * 
+     * 
+     * exemplo:
+     * G = ({1,2,3},{(1,2,3),(1,2,4)})
+     * 
+     * v = a
+     * distancia[0] = 0
+     * distancia[1] = 3
+     * distancia[2] = 7
+     * 
+     * anterior[0] = null
+     * anterior[1] = Verticie(1)
+     * anterior[2] = Verticie(2)
+    */
+
+   int idV = 0;
+    for(unsigned i = 0; i < g.getNumVertices(); i++){
+        distancia[i] = __INT_MAX__; // distancia comeca sendo intmax
+        anterior[i] = Verticie(-1,0,0); // verticie com id -1 significa que nao foi iniciado ainda
+        if(v.igual(O.at(i))){
+            idV = i;
+        }
+    }
+    
+    Verticie aux = O[0];
+    O[0] = O[idV];
+    O[idV] = aux;
+    mergesort(O,1,O.size() - 1);
+
+    std::vector<Grafo> vg;
+    vg.push_back(g);
+    return vg;
+}
+
 
 int main(int argc, char **argv){
 
-    if(argc != 2){
-        std::cout << "Erro: Argumentos invalidos" << std::endl;
-        std::cout << "Uso: " << argv[0] << " <nome do arquivo>" << std::endl;
-        exit(1);
-    }
-    std::string nomeArquivo = argv[1];
+    //if(argc != 2){
+    //    std::cout << "Erro: Argumentos invalidos" << std::endl;
+    //    std::cout << "Uso: " << argv[0] << " <nome do arquivo>" << std::endl;
+    //    exit(1);
+    //}
+    //std::string nomeArquivo = argv[1];
+    std::string nomeArquivo = "g1.txt";
     Grafo g = Grafo();
 
     leGrafo(nomeArquivo, &g);
     
 
-    g.printVertices();
-    
+ //   g.printVertices();
+    std::vector<Grafo> teste = bellmanford(g,g.getVerticie(2)); 
 
     return 0;
 }

@@ -19,7 +19,7 @@ void Grafo::addVerticie(int id, std::vector<std::tuple<Verticie,int>> vizinhos){
     */
     Verticie v(id, vizinhos);
     vertices.push_back(v);
-    numVertices++;
+    numVertices = vertices.size();
     numArestas += vizinhos.size(); 
 }
 
@@ -51,7 +51,7 @@ void Grafo::addVerticie(int id, int grauEntrada, int grauSaida){
     // funcao basica para adicionar um verticie
     Verticie v(id,grauEntrada, grauSaida);
     this -> vertices.push_back(v);
-    this -> numVertices++;
+    this -> numVertices = vertices.size();
 }
 
 void Grafo::addArco(int id, int idFim, int custo){
