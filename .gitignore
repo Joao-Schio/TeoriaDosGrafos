@@ -6,3 +6,5 @@ pccm
 *.txt
 main
 */main
+*.out
+*/*.out 
