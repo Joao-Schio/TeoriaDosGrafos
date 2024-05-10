@@ -85,3 +85,20 @@ std::vector<Verticie> Grafo::getVerticesVetor(){
     // coloquei o nome de vetor para deixar mais clara a diferenca entre o nome das funcoes
     return this -> vertices;
 }
+
+void Grafo::removeArco(int verticie, int vizinho){
+    for(unsigned i = 0; i < this -> vertices.size(); i++){
+        if(this -> vertices.at(i).getId() == verticie){
+            std::vector<std::tuple<Verticie,int>> *arcos = vertices.at(i).getArcosRef();
+            for(unsigned j = 0; j < arcos -> size(); j++){
+                if(std::get<0>(arcos -> at(j)).getId() == vizinho){
+                    arcos -> erase(arcos -> begin() + j);
+                }
+            }
+        }
+    }
+}
+
+void Grafo::setVerticieVetor(std::vector<Verticie> v){
+    this -> vertices = v;
+}

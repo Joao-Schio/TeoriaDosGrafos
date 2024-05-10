@@ -32,4 +32,5 @@ class Verticie{
         int getId();
         std::vector<std::tuple<Verticie,int>> getArcos();
         bool igual(Verticie b);
+        std::vector<std::tuple<Verticie,int>> *getArcosRef();
 };

@@ -1,7 +1,10 @@
 #include <iostream>
 #include "Grafo.hpp"
-
-
+#include <algorithm>
+#define REDUZIDO 1
+#define PROCESSADO 3
+#define NAO_PROCESSADO 0
+#define VERTICIE_DO_ALG 4
 
 
 void leGrafo(std::string nomeArquivo, Grafo *g){
@@ -76,6 +79,13 @@ void merge(std::vector<Verticie> &v, int inicio,int meio, int fim){
     }
 }
 
+void imprimeVisitacao(std::vector<Verticie> O,int iteracao){
+    std::cout << "O " << iteracao << " ";
+    for(Verticie v : O){
+        std::cout << v.getId() << " ";
+    }
+    std::cout << std::endl;
+}
 
 
 void mergesort(std::vector<Verticie> &v, int inicio, int fim){
@@ -86,13 +96,26 @@ void mergesort(std::vector<Verticie> &v, int inicio, int fim){
         merge(v,inicio,meio,fim);
     }
 }
+bool contem(std::vector<Verticie> v, Verticie a){
+    for(Verticie b : v){
+        if(a.igual(b)){
+            return true;
+        }
+    }
+    return false;
+}
 
-
+void desmarcar(std::vector<int> v){
+    for(unsigned i = 0; i < v.size(); i++){
+        v[i] = NAO_PROCESSADO;
+    }
+}
 
 std::vector<Grafo> bellmanford(Grafo g, Verticie v){
     std::vector<Verticie> anterior(g.getNumVertices());
     std::vector<int> distancia(g.getNumVertices());
     std::vector<Verticie> O = g.getVerticesVetor();
+    std::vector<int> estadoVerticie(g.getNumVertices());
 
 
     /**
@@ -125,35 +148,70 @@ std::vector<Grafo> bellmanford(Grafo g, Verticie v){
         if(v.igual(O.at(i))){
             idV = i;
         }
+        estadoVerticie[i] = NAO_PROCESSADO;
     }
     
     Verticie aux = O[0];
     O[0] = O[idV];
     O[idV] = aux;
-    mergesort(O,1,O.size() - 1);
+    mergesort(O,1,O.size() - 1); // para ter certeza que na primeira iteracao O sempre estara em ordem crescente
+    std::vector<Grafo> saida;
+    estadoVerticie[v.getId()] = VERTICIE_DO_ALG;
+    long iteracoes = 0;
+    do{
+        imprimeVisitacao(O,iteracoes);
+        std::vector<Verticie> OLinha;
+        Grafo grafo = Grafo();
+        desmarcar(estadoVerticie);
+        for(Verticie v : O){
+            grafo.addVerticie(v.getId(),0,0);
+            estadoVerticie[v.getId()] = PROCESSADO;
+            for(std::tuple<Verticie,int> a : v.getArcos()){
+                if(distancia[v.getId()] + std::get<1>(a) < distancia[std::get<0>(a).getId()]){
+                    grafo.addVerticie(std::get<0>(a).getId(),0,0);
+                    distancia[std::get<0>(a).getId()] = distancia[v.getId()] + std::get<1>(a);
+                    anterior[v.getId()] = std::get<0>(a);
+                    estadoVerticie[std::get<0>(a).getId()] = REDUZIDO;
+                    if(estadoVerticie[std::get<0>(a).getId()] != PROCESSADO){
+                        OLinha.push_back(std::get<0>(a));
+                    }
+                    grafo.addArco(v.getId(),std::get<0>(a).getId(),std::get<1>(a));
+                }
+            }
+        }
+        for(unsigned i = 0; i < O.size(); i++){
+            if(estadoVerticie[O[i].getId()] == REDUZIDO ){
+                OLinha.push_back(O[i]);
+            }
+        }
+        for(unsigned i = 0; i < O.size(); i++){
+            if(estadoVerticie[O[i].getId()] != PROCESSADO && estadoVerticie[O[i].getId()] != REDUZIDO){
+                OLinha.push_back(O[i]);
+            }
+        }
 
-    std::vector<Grafo> vg;
-    vg.push_back(g);
-    return vg;
+        for(unsigned i = 0; i < O.size(); i++){
+            O[i] = OLinha[i];
+        }
+        iteracoes++;
+        saida.push_back(grafo);
+    }while(iteracoes < g.getNumVertices() - 1);
+    return saida;
 }
 
 
 int main(int argc, char **argv){
 
-    //if(argc != 2){
-    //    std::cout << "Erro: Argumentos invalidos" << std::endl;
-    //    std::cout << "Uso: " << argv[0] << " <nome do arquivo>" << std::endl;
-    //    exit(1);
-    //}
-    //std::string nomeArquivo = argv[1];
-    std::string nomeArquivo = "g1.txt";
+    if(argc != 2){
+        std::cout << "Erro: Argumentos invalidos" << std::endl;
+        std::cout << "Uso: " << argv[0] << " <nome do arquivo>" << std::endl;
+        exit(1);
+    }
+    std::string nomeArquivo = argv[1];
+    //std::string nomeArquivo = "g1.txt";
     Grafo g = Grafo();
 
     leGrafo(nomeArquivo, &g);
-    
-
- //   g.printVertices();
-    std::vector<Grafo> teste = bellmanford(g,g.getVerticie(2)); 
-
+    bellmanford(g, g.getVerticie(1));
     return 0;
 }
