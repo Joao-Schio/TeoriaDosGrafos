@@ -36,7 +36,7 @@ std::vector<std::tuple<Verticie,int>> Verticie::getArcos(){
 }
 
 bool Verticie::igual(Verticie b){
-    return this -> getId() == b.getId() && this -> arcos.size() == b.getArcos().size();
+    return this -> getId() == b.getId();
 }
 
 std::vector<std::tuple<Verticie,int>>* Verticie::getArcosRef(){

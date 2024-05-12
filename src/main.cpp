@@ -87,7 +87,6 @@ void imprimeVisitacao(std::vector<Verticie> O,int iteracao){
     std::cout << std::endl;
 }
 
-
 void mergesort(std::vector<Verticie> &v, int inicio, int fim){
     if(fim > inicio){
         int meio = (fim + inicio) / 2;
@@ -96,122 +95,140 @@ void mergesort(std::vector<Verticie> &v, int inicio, int fim){
         merge(v,inicio,meio,fim);
     }
 }
+
 bool contem(std::vector<Verticie> v, Verticie a){
     for(Verticie b : v){
-        if(a.igual(b)){
+        if(a.getId() == b.getId()){
             return true;
         }
     }
     return false;
 }
 
-void desmarcar(std::vector<int> v){
+void desmarcar(std::vector<bool> v){
     for(unsigned i = 0; i < v.size(); i++){
-        v[i] = NAO_PROCESSADO;
+        v.at(i) = false;
     }
 }
 
-std::vector<Grafo> bellmanford(Grafo g, Verticie v){
-    std::vector<Verticie> anterior(g.getNumVertices());
-    std::vector<int> distancia(g.getNumVertices());
+
+void printCaminho(std::vector<Verticie> anterior, std::vector<int> custo, Verticie v, Grafo g){
+    std::vector<Verticie> todos = g.getVerticesVetor();
+    mergesort(todos,0,todos.size() - 1);
+    for(Verticie i : todos){
+        if(i.igual(v)){
+            std::cout << "P " << i.getId() << " 0 1 " << i.getId() << std::endl;
+        }
+        else if (!i.igual(v)){
+            std::vector<int> idCaminho;
+            Verticie aux = anterior.at(i.getId());
+            while(!aux.igual(v) && !aux.igual(Verticie())){
+                idCaminho.insert(idCaminho.begin(),aux.getId());
+                aux = anterior.at(aux.getId());
+            }
+            std::cout << "P " << i.getId() << " " << custo.at(i.getId()) << " " << idCaminho.size() + 2 << " " << v.getId() << " ";
+            for(int j : idCaminho){
+                std::cout << j << " ";
+            }
+            std::cout << i.getId() << std::endl;
+        }
+    }
+}
+
+void bellmanford(Grafo g, Verticie v,std::vector<Verticie> anterior, std::vector<int> custo){
+    // Entradas grafo G, verticie de origem V, vetor de verticies que armazena o anterior de um id
+    // vetor de custo que armazena o custo da origem ate o verticie com o id 
+    for(unsigned i = 0; i < g.getNumVertices();i++){
+        anterior[i] = Verticie();
+        custo[i] =  200000000; // int max como infinito
+    }
+    custo[v.getId()] = 0;
+    // definindo a ordem
     std::vector<Verticie> O = g.getVerticesVetor();
-    std::vector<int> estadoVerticie(g.getNumVertices());
-
-
-    /**
-     * minha ideia eh usar os vetores como se fossem uma tabela de dispersao
-     * com a funcao de dispersao sendo f(x) = x - 1
-     * para um acesso mais rapido
-     * diferentemente do vetor O que a ordem importa
-     * 
-     * anterior vai receber o verticie anterior a ele no caminho
-     * e distancia vai receber o valor de v ate ele
-     * 
-     * 
-     * exemplo:
-     * G = ({1,2,3},{(1,2,3),(1,2,4)})
-     * 
-     * v = a
-     * distancia[0] = 0
-     * distancia[1] = 3
-     * distancia[2] = 7
-     * 
-     * anterior[0] = null
-     * anterior[1] = Verticie(1)
-     * anterior[2] = Verticie(2)
-    */
-
-   int idV = 0;
-    for(unsigned i = 0; i < g.getNumVertices(); i++){
-        distancia[i] = __INT_MAX__; // distancia comeca sendo intmax
-        anterior[i] = Verticie(-1,0,0); // verticie com id -1 significa que nao foi iniciado ainda
-        if(v.igual(O.at(i))){
+    int idV = 0;
+    // achando a posicao do verticie V em O
+    for(unsigned i = 0; i < O.size(); i++){
+        if(O.at(i).igual(v)){
             idV = i;
         }
-        estadoVerticie[i] = NAO_PROCESSADO;
     }
-    
-    Verticie aux = O[0];
-    O[0] = O[idV];
-    O[idV] = aux;
-    mergesort(O,1,O.size() - 1); // para ter certeza que na primeira iteracao O sempre estara em ordem crescente
-    std::vector<Grafo> saida;
-    estadoVerticie[v.getId()] = VERTICIE_DO_ALG;
+    // definindo a ordem comecando em V e seguindo em ordem crescente de ID
+    Verticie aux = O.at(0);
+    O.at(0) = O.at(idV);
+    O.at(idV) = aux;
+    mergesort(O,1,O.size() - 1);
+
     long iteracoes = 0;
-    do{
+    while(iteracoes < g.getNumVertices()){
         imprimeVisitacao(O,iteracoes);
-        std::vector<Verticie> OLinha;
-        Grafo grafo = Grafo();
-        desmarcar(estadoVerticie);
-        for(Verticie v : O){
-            grafo.addVerticie(v.getId(),0,0);
-            estadoVerticie[v.getId()] = PROCESSADO;
-            for(std::tuple<Verticie,int> a : v.getArcos()){
-                if(distancia[v.getId()] + std::get<1>(a) < distancia[std::get<0>(a).getId()]){
-                    grafo.addVerticie(std::get<0>(a).getId(),0,0);
-                    distancia[std::get<0>(a).getId()] = distancia[v.getId()] + std::get<1>(a);
-                    anterior[v.getId()] = std::get<0>(a);
-                    estadoVerticie[std::get<0>(a).getId()] = REDUZIDO;
-                    if(estadoVerticie[std::get<0>(a).getId()] != PROCESSADO){
-                        OLinha.push_back(std::get<0>(a));
+        std::vector<Verticie> processados(0);
+        std::vector<Verticie> reduzidos(0);
+        std::vector<Verticie> reduzidoApos(0);
+
+        for(Verticie u : O){
+            processados.push_back(u);
+            for(std::tuple<Verticie,int> arco : u.getArcos()){
+                Verticie vArco = std::get<0>(arco);
+                int custoArco = std::get<1>(arco);
+                if(custo.at(vArco.getId()) > custo.at(u.getId()) + custoArco){
+                    custo.at(vArco.getId()) = custo.at(u.getId()) + custoArco;
+                    anterior.at(vArco.getId()) = u;
+                    if(contem(processados,vArco)){
+                        reduzidoApos.push_back(vArco);
                     }
-                    grafo.addArco(v.getId(),std::get<0>(a).getId(),std::get<1>(a));
+                    else if(!contem(processados,vArco)){
+                        reduzidos.push_back(vArco);
+                    }
                 }
             }
         }
-        for(unsigned i = 0; i < O.size(); i++){
-            if(estadoVerticie[O[i].getId()] == REDUZIDO ){
-                OLinha.push_back(O[i]);
+        int pos = 0;
+        std::vector<Verticie> OLinha(g.getNumVertices());
+        for(Verticie i : O){
+            if(contem(reduzidoApos,i)){
+                OLinha.at(pos) = i;
+                pos++;
             }
         }
-        for(unsigned i = 0; i < O.size(); i++){
-            if(estadoVerticie[O[i].getId()] != PROCESSADO && estadoVerticie[O[i].getId()] != REDUZIDO){
-                OLinha.push_back(O[i]);
+        for(Verticie i : O){
+            if(contem(reduzidos,i) && !contem(OLinha,i)){
+                OLinha.at(pos) = i;
+                pos++;
             }
         }
-
-        for(unsigned i = 0; i < O.size(); i++){
-            O[i] = OLinha[i];
+        for(Verticie i : O){
+            if(!contem(OLinha,i)){
+                OLinha.at(pos) = i;
+                pos++;
+            }
         }
         iteracoes++;
-        saida.push_back(grafo);
-    }while(iteracoes < g.getNumVertices() - 1);
-    return saida;
+        for(unsigned i = 0 ; i < OLinha.size(); i++){
+            O.at(i) = OLinha.at(i);
+        }
+    }
+    printCaminho(anterior,custo,v,g);
 }
 
 
 int main(int argc, char **argv){
 
-    if(argc != 2){
+    int idVerticie;
+
+    if(argc != 3){
         std::cout << "Erro: Argumentos invalidos" << std::endl;
         std::cout << "Uso: " << argv[0] << " <nome do arquivo>" << std::endl;
         exit(1);
     }
     std::string nomeArquivo = argv[1];
-    //std::string nomeArquivo = "g1.txt";
+    std::string vId = argv[2];
+    idVerticie = std::stoi(vId);
     Grafo g = Grafo();
 
     leGrafo(nomeArquivo, &g);
-    bellmanford(g, g.getVerticie(1));
+    std::vector<Verticie> anteriores(g.getNumVertices());
+    std::vector<int> distancias(g.getNumVertices());
+    bellmanford(g,g.getVerticie(idVerticie),anteriores,distancias);
+    
     return 0;
 }
