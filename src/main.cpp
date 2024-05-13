@@ -135,6 +135,20 @@ void printCaminho(std::vector<Verticie> anterior, std::vector<int> custo, Vertic
     }
 }
 
+bool cicloNeg(Grafo g, Verticie v,std::vector<Verticie> anterior, std::vector<int> custo){
+    for(Verticie u : g.getVerticesVetor()){
+        for(std::tuple<Verticie,int> arco : u.getArcos()){
+            Verticie vArco = std::get<0>(arco);
+            int custoArco = std::get<1>(arco);
+            if(custo.at(vArco.getId()) > custo.at(u.getId()) + custoArco){
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
+
 void bellmanford(Grafo g, Verticie v,std::vector<Verticie> anterior, std::vector<int> custo){
     // Entradas grafo G, verticie de origem V, vetor de verticies que armazena o anterior de um id
     // vetor de custo que armazena o custo da origem ate o verticie com o id 
@@ -207,7 +221,11 @@ void bellmanford(Grafo g, Verticie v,std::vector<Verticie> anterior, std::vector
             O.at(i) = OLinha.at(i);
         }
     }
-    printCaminho(anterior,custo,v,g);
+    if(!cicloNeg(g,v,anterior,custo))
+        printCaminho(anterior,custo,v,g);
+    else if(cicloNeg(g,v,anterior,custo)){
+        std::cout << "C" << std::endl;
+    }
 }
 
 
@@ -223,12 +241,14 @@ int main(int argc, char **argv){
     std::string nomeArquivo = argv[1];
     std::string vId = argv[2];
     idVerticie = std::stoi(vId);
+    //std::string nomeArquivo = "g-neg-c-10-30.txt";
+    //idVerticie = 0;
     Grafo g = Grafo();
 
     leGrafo(nomeArquivo, &g);
     std::vector<Verticie> anteriores(g.getNumVertices());
     std::vector<int> distancias(g.getNumVertices());
     bellmanford(g,g.getVerticie(idVerticie),anteriores,distancias);
-    
+
     return 0;
 }
