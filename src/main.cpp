@@ -1,10 +1,5 @@
 #include <iostream>
 #include "Grafo.hpp"
-#include <algorithm>
-#define REDUZIDO 1
-#define PROCESSADO 3
-#define NAO_PROCESSADO 0
-#define VERTICIE_DO_ALG 4
 
 
 void leGrafo(std::string nomeArquivo, Grafo *g){
