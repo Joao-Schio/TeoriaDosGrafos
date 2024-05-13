@@ -139,7 +139,7 @@ void printCaminho(std::vector<Verticie> anterior, std::vector<int> custo, Vertic
     }
 }
 
-bool cicloNeg(Grafo g, Verticie v,std::vector<Verticie> anterior, std::vector<int> custo){
+bool cicloNeg(Grafo g, Verticie v, std::vector<int> custo){
     for(Verticie u : g.getVerticesVetor()){
         for(std::tuple<Verticie,int> arco : u.getArcos()){
             Verticie vArco = std::get<0>(arco);
@@ -225,9 +225,9 @@ void bellmanford(Grafo g, Verticie v,std::vector<Verticie> anterior, std::vector
             O.at(i) = OLinha.at(i);
         }
     }
-    if(!cicloNeg(g,v,anterior,custo))
+    if(!cicloNeg(g,v,custo))
         printCaminho(anterior,custo,v,g);
-    else if(cicloNeg(g,v,anterior,custo)){
+    else if(cicloNeg(g,v,custo)){
         std::cout << "C" << std::endl;
     }
 }
