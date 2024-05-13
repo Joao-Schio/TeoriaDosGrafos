@@ -37,5 +37,5 @@ do
   diff out.txt "g-neg-c-10-30-$variable.out" -w -I "C" -I "E"
 done
 
-echo "Teste-c-neg-10-30 passou"
+echo "Teste c-neg-10-30 passou"
 
