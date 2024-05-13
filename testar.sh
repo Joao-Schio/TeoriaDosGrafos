@@ -3,7 +3,7 @@ set -e
 
 # define an int var
 declare -i i=0
-g++ src/*.cpp -o pccm -Wall -Werror
+g++ src/*.cpp -o pccm -Wall -Werror -std=c++20
 
 for variable in {0..4}
 do

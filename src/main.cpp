@@ -1,3 +1,9 @@
+/**
+ * Aluno João Pedro Schio Ortega
+ * comando de compilacao usado - g++ src/<regex para todos>.cpp -o pccm -Wall -Werror -std=c++20
+ * por algum motivo o Werror nao compilar com asteristico dentro de comentario
+*/
+
 #include <iostream>
 #include "Grafo.hpp"
 
@@ -238,8 +244,6 @@ int main(int argc, char **argv){
     std::string nomeArquivo = argv[1];
     std::string vId = argv[2];
     idVerticie = std::stoi(vId);
-    //std::string nomeArquivo = "g-neg-c-10-30.txt";
-    //idVerticie = 0;
     Grafo g = Grafo();
 
     leGrafo(nomeArquivo, &g);
