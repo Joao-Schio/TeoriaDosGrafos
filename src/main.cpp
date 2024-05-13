@@ -114,6 +114,9 @@ void printCaminho(std::vector<Verticie> anterior, std::vector<int> custo, Vertic
         if(i.igual(v)){
             std::cout << "P " << i.getId() << " 0 1 " << i.getId() << std::endl;
         }
+        else if(anterior.at(i.getId()).igual(Verticie())){
+            std::cout << "U " << i.getId() << std::endl;
+        }
         else if (!i.igual(v)){
             std::vector<int> idCaminho;
             Verticie aux = anterior.at(i.getId());
