@@ -158,7 +158,7 @@ void bellmanford(Grafo g, Verticie v,std::vector<Verticie> anterior, std::vector
     // vetor de custo que armazena o custo da origem ate o verticie com o id 
     for(unsigned i = 0; i < g.getNumVertices();i++){
         anterior[i] = Verticie();
-        custo[i] =  200000000; // int max como infinito
+        custo[i] =  200000000; // numero muito maior que o custo maximo
     }
     custo[v.getId()] = 0;
     // definindo a ordem
