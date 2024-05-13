@@ -10,7 +10,7 @@
 void leGrafo(std::string nomeArquivo, Grafo *g){
     FILE *arquivo = fopen(nomeArquivo.c_str(), "r");
     if(arquivo == NULL){
-        std::cout << "Erro ao abrir o arquivo" << std::endl;
+        std::cout << "E" << std::endl;
         exit(1);
     }
     char inicio = 'i';
@@ -234,8 +234,7 @@ int main(int argc, char **argv){
     int idVerticie;
 
     if(argc != 3){
-        std::cout << "Erro: Argumentos invalidos" << std::endl;
-        std::cout << "Uso: " << argv[0] << " <nome do arquivo>" << std::endl;
+        std::cout << "E" << std::endl;
         exit(1);
     }
     std::string nomeArquivo = argv[1];
