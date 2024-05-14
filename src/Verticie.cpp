@@ -42,3 +42,4 @@ bool Verticie::igual(Verticie b){
 std::vector<std::tuple<Verticie,int>>* Verticie::getArcosRef(){
     return &(this -> arcos);
 }
+

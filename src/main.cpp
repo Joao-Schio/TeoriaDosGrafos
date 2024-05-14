@@ -2,11 +2,18 @@
  * Aluno João Pedro Schio Ortega
  * comando de compilacao usado - g++ src/<regex para todos>.cpp -o pccm -Wall -Werror -std=c++20
  * por algum motivo o Werror nao compilar com asteristico dentro de comentario
+ * estou reentregando o trabalho após a data de entrega
+ * por que depois de testar com os grafos maiores percebi que o algoritmo estava MUITO lento
+ * 
+ * 
+ * consideracoes : 
+ *     Não use o a implementação do foreach do c++ por que ele é MUITO lento
 */
+
+
 
 #include <iostream>
 #include "Grafo.hpp"
-
 
 void leGrafo(std::string nomeArquivo, Grafo *g){
     FILE *arquivo = fopen(nomeArquivo.c_str(), "r");
@@ -40,6 +47,7 @@ void leGrafo(std::string nomeArquivo, Grafo *g){
     }
     fclose(arquivo);
 }
+
 
 
 void merge(std::vector<Verticie> &v, int inicio,int meio, int fim){
@@ -81,11 +89,11 @@ void merge(std::vector<Verticie> &v, int inicio,int meio, int fim){
 }
 
 void imprimeVisitacao(std::vector<Verticie> &O,int iteracao){
-    std::cout << "O " << iteracao << " ";
-    for(Verticie v : O){
-        std::cout << v.getId() << " ";
+    printf("O %d ",iteracao);
+    for(unsigned i = 0; i < O.size(); i++){
+        printf("%d ",O.at(i).getId());
     }
-    std::cout << std::endl;
+    printf("\n");
 }
 
 void mergesort(std::vector<Verticie> &v, int inicio, int fim){
@@ -97,14 +105,6 @@ void mergesort(std::vector<Verticie> &v, int inicio, int fim){
     }
 }
 
-bool contem(std::vector<Verticie> &v, Verticie a){
-    for(Verticie b : v){
-        if(a.getId() == b.getId()){
-            return true;
-        }
-    }
-    return false;
-}
 
 void desmarcar(std::vector<bool> &v){
     for(unsigned i = 0; i < v.size(); i++){
@@ -116,12 +116,13 @@ void desmarcar(std::vector<bool> &v){
 void printCaminho(std::vector<Verticie> &anterior, std::vector<int> &custo, Verticie v, Grafo g){
     std::vector<Verticie> todos = g.getVerticesVetor();
     mergesort(todos,0,todos.size() - 1);
-    for(Verticie i : todos){
+    for(unsigned x = 0; x < todos.size(); x++){
+        Verticie i = todos.at(x);
         if(i.igual(v)){
-            std::cout << "P " << i.getId() << " 0 1 " << i.getId() << std::endl;
+            printf("P %d 0 1 %d\n",i.getId(),i.getId());
         }
         else if(anterior.at(i.getId()).igual(Verticie())){
-            std::cout << "U " << i.getId() << std::endl;
+            printf("U %d\n",i.getId());
         }
         else if (!i.igual(v)){
             std::vector<int> idCaminho;
@@ -130,18 +131,21 @@ void printCaminho(std::vector<Verticie> &anterior, std::vector<int> &custo, Vert
                 idCaminho.insert(idCaminho.begin(),aux.getId());
                 aux = anterior.at(aux.getId());
             }
-            std::cout << "P " << i.getId() << " " << custo.at(i.getId()) << " " << idCaminho.size() + 2 << " " << v.getId() << " ";
+            printf("P %d %d %ld %d ",i.getId(),custo.at(i.getId()),idCaminho.size() + 2,v.getId());
             for(int j : idCaminho){
-                std::cout << j << " ";
+                printf("%d ",j);
             }
-            std::cout << i.getId() << std::endl;
+            printf("%d\n",i.getId());
         }
     }
 }
 
 bool cicloNeg(Grafo g, Verticie v, std::vector<int> &custo){
-    for(Verticie u : g.getVerticesVetor()){
-        for(std::tuple<Verticie,int> arco : u.getArcos()){
+    for(unsigned x = 0; x < g.getNumVertices(); x++){
+        Verticie u = g.getVerticie(x);
+        std::vector<std::tuple<Verticie,int>> arcos = u.getArcos();
+        for(unsigned y = 0; y < arcos.size(); y++){
+            std::tuple<Verticie,int> arco = arcos.at(y);
             Verticie vArco = std::get<0>(arco);
             int custoArco = std::get<1>(arco);
             if(custo.at(vArco.getId()) > custo.at(u.getId()) + custoArco){
@@ -183,56 +187,67 @@ void bellmanford(Grafo g, Verticie v,std::vector<Verticie> &anterior, std::vecto
     long iteracoes = 0;
     while(iteracoes < g.getNumVertices()){
         imprimeVisitacao(O,iteracoes);
-        std::vector<Verticie> processados(0);
-        std::vector<Verticie> reduzidos(0);
-        std::vector<Verticie> reduzidoApos(0);
-
-        for(Verticie u : O){
-            processados.push_back(u);
-            for(std::tuple<Verticie,int> arco : u.getArcos()){
+        std::vector<bool> processados(g.getNumVertices());
+        std::vector<bool> reduzidos(g.getNumVertices());
+        std::vector<bool> reduzidoApos(g.getNumVertices());
+        std::vector<bool> inserido(g.getNumVertices());
+        bool entrouNoRedApos = false;
+        bool entrouNoRed = false;
+        for(unsigned i = 0; i < O.size(); i++){
+            Verticie u = O.at(i);
+            processados.at(u.getId()) = true;
+            std::vector<std::tuple<Verticie,int>> arcos = u.getArcos();
+            for(unsigned j = 0; j < arcos.size(); j++){
+                std::tuple<Verticie,int> arco = arcos.at(j);
                 Verticie vArco = std::get<0>(arco);
                 int custoArco = std::get<1>(arco);
                 if(custo.at(vArco.getId()) > custo.at(u.getId()) + custoArco){
                     custo.at(vArco.getId()) = custo.at(u.getId()) + custoArco;
                     anterior.at(vArco.getId()) = u;
-                    bool tem = contem(processados,vArco); // senti a necessidade de criar uma variavel para nao chamar a funcao duas vezes
-                    if(tem){
-                        reduzidoApos.push_back(vArco);
+                    if(processados.at(vArco.getId())){
+                        reduzidoApos.at(vArco.getId()) = true;
+                        entrouNoRedApos = true;
                     }
-                    else if(!tem){ // sou contra else vazio
-                        reduzidos.push_back(vArco);
+                    else if(!processados.at(vArco.getId())){ 
+                        reduzidos.at(vArco.getId()) = true;
+                        entrouNoRed = true;
                     }
                 }
             }
         }
-        if(reduzidoApos.size() == 0 && reduzidos.size() == 0){
+        if(!entrouNoRedApos && !entrouNoRed){
             podeParar(O,iteracoes,g.getNumVertices());
             break;
         }
         int pos = 0;
         std::vector<Verticie> OLinha(g.getNumVertices());
-        for(Verticie i : O){
-            if(contem(reduzidoApos,i)){
+
+        for(unsigned x = 0; x < O.size(); x++){
+            Verticie i = O.at(x);
+            if(reduzidoApos.at(i.getId())){
                 OLinha.at(pos) = i;
+                inserido.at(i.getId()) = true;
                 pos++;
             }
         }
-        for(Verticie i : O){
-            if(contem(reduzidos,i) && !contem(OLinha,i)){
+        for(unsigned x = 0; x < O.size(); x++){
+            Verticie i = O.at(x);
+            if(reduzidos.at(i.getId()) && !inserido.at(i.getId())){
                 OLinha.at(pos) = i;
+                inserido.at(i.getId()) = true;
                 pos++;
             }
         }
-        for(Verticie i : O){
-            if(!contem(OLinha,i)){
+        for(unsigned x = 0; x < O.size(); x++){
+            Verticie i = O.at(x);
+            if(!inserido.at(i.getId())){
                 OLinha.at(pos) = i;
+                inserido.at(i.getId()) = true;
                 pos++;
             }
         }
         iteracoes++;
-        for(unsigned i = 0 ; i < OLinha.size(); i++){
-            O.at(i) = OLinha.at(i);
-        }
+        O = OLinha;
     }
     if(!cicloNeg(g,v,custo))
         printCaminho(anterior,custo,v,g);
