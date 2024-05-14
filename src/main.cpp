@@ -116,6 +116,10 @@ void desmarcar(std::vector<bool> &v){
 void printCaminho(std::vector<Verticie> &anterior, std::vector<int> &custo, Verticie v, Grafo g){
     std::vector<Verticie> todos = g.getVerticesVetor();
     mergesort(todos,0,todos.size() - 1);
+    /**
+     * grafo.txt não necessariamente tem os vertices em ordem crescente
+     * entao na hora da impressão é preciso ordenar
+    */
     for(unsigned x = 0; x < todos.size(); x++){
         Verticie i = todos.at(x);
         if(i.igual(v)){
@@ -191,8 +195,8 @@ void bellmanford(Grafo g, Verticie v,std::vector<Verticie> &anterior, std::vecto
         std::vector<bool> reduzidos(g.getNumVertices());
         std::vector<bool> reduzidoApos(g.getNumVertices());
         std::vector<bool> inserido(g.getNumVertices());
-        bool entrouNoRedApos = false;
-        bool entrouNoRed = false;
+        bool entrouNoRedApos = false; // ja que agora estou usando os vetores reduzidos com o tamanho total
+        bool entrouNoRed = false; // preciso de uma flag para saber quando eles nao foram definidos para poder parar
         for(unsigned i = 0; i < O.size(); i++){
             Verticie u = O.at(i);
             processados.at(u.getId()) = true;
