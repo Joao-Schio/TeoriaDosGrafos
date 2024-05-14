@@ -80,7 +80,7 @@ void merge(std::vector<Verticie> &v, int inicio,int meio, int fim){
     }
 }
 
-void imprimeVisitacao(std::vector<Verticie> O,int iteracao){
+void imprimeVisitacao(std::vector<Verticie> &O,int iteracao){
     std::cout << "O " << iteracao << " ";
     for(Verticie v : O){
         std::cout << v.getId() << " ";
@@ -97,7 +97,7 @@ void mergesort(std::vector<Verticie> &v, int inicio, int fim){
     }
 }
 
-bool contem(std::vector<Verticie> v, Verticie a){
+bool contem(std::vector<Verticie> &v, Verticie a){
     for(Verticie b : v){
         if(a.getId() == b.getId()){
             return true;
@@ -106,14 +106,14 @@ bool contem(std::vector<Verticie> v, Verticie a){
     return false;
 }
 
-void desmarcar(std::vector<bool> v){
+void desmarcar(std::vector<bool> &v){
     for(unsigned i = 0; i < v.size(); i++){
         v.at(i) = false;
     }
 }
 
 
-void printCaminho(std::vector<Verticie> anterior, std::vector<int> custo, Verticie v, Grafo g){
+void printCaminho(std::vector<Verticie> &anterior, std::vector<int> &custo, Verticie v, Grafo g){
     std::vector<Verticie> todos = g.getVerticesVetor();
     mergesort(todos,0,todos.size() - 1);
     for(Verticie i : todos){
@@ -139,7 +139,7 @@ void printCaminho(std::vector<Verticie> anterior, std::vector<int> custo, Vertic
     }
 }
 
-bool cicloNeg(Grafo g, Verticie v, std::vector<int> custo){
+bool cicloNeg(Grafo g, Verticie v, std::vector<int> &custo){
     for(Verticie u : g.getVerticesVetor()){
         for(std::tuple<Verticie,int> arco : u.getArcos()){
             Verticie vArco = std::get<0>(arco);
@@ -152,13 +152,13 @@ bool cicloNeg(Grafo g, Verticie v, std::vector<int> custo){
     return false;
 }
 
-void podeParar(std::vector<Verticie> O, int iteracoes, int tamGrafo){
+void podeParar(std::vector<Verticie> &O, int iteracoes, int tamGrafo){
     for(int i = iteracoes + 1; i < tamGrafo; i++){
         imprimeVisitacao(O,i);
     }
 }
 
-void bellmanford(Grafo g, Verticie v,std::vector<Verticie> anterior, std::vector<int> custo){
+void bellmanford(Grafo g, Verticie v,std::vector<Verticie> &anterior, std::vector<int> &custo){
     // Entradas grafo G, verticie de origem V, vetor de verticies que armazena o anterior de um id
     // vetor de custo que armazena o custo da origem ate o verticie com o id 
     for(unsigned i = 0; i < g.getNumVertices();i++){
@@ -180,7 +180,6 @@ void bellmanford(Grafo g, Verticie v,std::vector<Verticie> anterior, std::vector
     O.at(0) = O.at(idV);
     O.at(idV) = aux;
     mergesort(O,1,O.size() - 1);
-
     long iteracoes = 0;
     while(iteracoes < g.getNumVertices()){
         imprimeVisitacao(O,iteracoes);
@@ -196,10 +195,11 @@ void bellmanford(Grafo g, Verticie v,std::vector<Verticie> anterior, std::vector
                 if(custo.at(vArco.getId()) > custo.at(u.getId()) + custoArco){
                     custo.at(vArco.getId()) = custo.at(u.getId()) + custoArco;
                     anterior.at(vArco.getId()) = u;
-                    if(contem(processados,vArco)){
+                    bool tem = contem(processados,vArco); // senti a necessidade de criar uma variavel para nao chamar a funcao duas vezes
+                    if(tem){
                         reduzidoApos.push_back(vArco);
                     }
-                    else if(!contem(processados,vArco)){
+                    else if(!tem){ // sou contra else vazio
                         reduzidos.push_back(vArco);
                     }
                 }
