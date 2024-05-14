@@ -245,16 +245,14 @@ void bellmanford(Grafo g, Verticie v,std::vector<Verticie> anterior, std::vector
 int main(int argc, char **argv){
 
     int idVerticie;
-//
-    //if(argc != 3){
-    //    std::cout << "E" << std::endl;
-    //    exit(1);
-    //}
-    //std::string nomeArquivo = argv[1];
-    //std::string vId = argv[2];
-    //idVerticie = std::stoi(vId);
-    std::string nomeArquivo = "g-100-1000.txt";
-    idVerticie = 12;
+
+    if(argc != 3){
+        std::cout << "E" << std::endl;
+        exit(1);
+    }
+    std::string nomeArquivo = argv[1];
+    std::string vId = argv[2];
+    idVerticie = std::stoi(vId);
     Grafo g = Grafo();
 
     leGrafo(nomeArquivo, &g);

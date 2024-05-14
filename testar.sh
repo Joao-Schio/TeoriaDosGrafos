@@ -55,22 +55,23 @@ echo "teste  100 1000 37 passou"
 ./pccm g-100-1000.txt 84 > out.txt
 diff out.txt "g-100-1000-84.out" -w
 echo "g-100-1000 passou"
-./pccm g-1000-10000 31
-diff a.out "g-1000-10000-31.out" -w
+echo "g 1000-10000 comecando"
+./pccm g-1000-10000.txt 31 > out.txt
+diff out.txt "g-1000-10000-31.out" -w
 echo "g-1000-10000 31 passou"
-./pccm g-1000-10000 265
-diff a.out "g-1000-10000-265.out" -w
+./pccm g-1000-10000.txt 265 > out.txt
+diff out.txt "g-1000-10000-265.out" -w
 echo "g-1000-10000 265 passou"
-./pccm g-1000-10000 403
-diff a.out "g-1000-10000-403.out" -w
+./pccm g-1000-10000.txt 403 > out.txt
+diff out.out "g-1000-10000-403.out" -w
 echo "g-1000-10000 403 passou"
-./pccm g-1000-10000 697
-diff a.out "g-1000-10000-697.out" -w
+./pccm g-1000-10000.txt 697
+diff out.txt "g-1000-10000-697.out" -w
 echo "g-1000-10000 697 passou"
-./pccm g-1000-10000 812
-diff a.out "g-1000-10000-812.out" -w
-./pccm g-1000-10000 963
-diff a.out "g-1000-10000-963.out" -w
+./pccm g-1000-10000.txt 812
+diff out.txt "g-1000-10000-812.out" -w
+./pccm g-1000-10000.txt 963
+diff out.txt "g-1000-10000-963.out" -w
 echo "g-1000-10000 passou"
 
 
