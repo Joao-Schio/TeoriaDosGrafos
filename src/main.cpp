@@ -152,6 +152,11 @@ bool cicloNeg(Grafo g, Verticie v, std::vector<int> custo){
     return false;
 }
 
+void podeParar(std::vector<Verticie> O, int iteracoes, int tamGrafo){
+    for(int i = iteracoes + 1; i < tamGrafo; i++){
+        imprimeVisitacao(O,i);
+    }
+}
 
 void bellmanford(Grafo g, Verticie v,std::vector<Verticie> anterior, std::vector<int> custo){
     // Entradas grafo G, verticie de origem V, vetor de verticies que armazena o anterior de um id
@@ -200,6 +205,10 @@ void bellmanford(Grafo g, Verticie v,std::vector<Verticie> anterior, std::vector
                 }
             }
         }
+        if(reduzidoApos.size() == 0 && reduzidos.size() == 0){
+            podeParar(O,iteracoes,g.getNumVertices());
+            break;
+        }
         int pos = 0;
         std::vector<Verticie> OLinha(g.getNumVertices());
         for(Verticie i : O){
@@ -236,14 +245,16 @@ void bellmanford(Grafo g, Verticie v,std::vector<Verticie> anterior, std::vector
 int main(int argc, char **argv){
 
     int idVerticie;
-
-    if(argc != 3){
-        std::cout << "E" << std::endl;
-        exit(1);
-    }
-    std::string nomeArquivo = argv[1];
-    std::string vId = argv[2];
-    idVerticie = std::stoi(vId);
+//
+    //if(argc != 3){
+    //    std::cout << "E" << std::endl;
+    //    exit(1);
+    //}
+    //std::string nomeArquivo = argv[1];
+    //std::string vId = argv[2];
+    //idVerticie = std::stoi(vId);
+    std::string nomeArquivo = "g-100-1000.txt";
+    idVerticie = 12;
     Grafo g = Grafo();
 
     leGrafo(nomeArquivo, &g);
