@@ -19,8 +19,11 @@ public class Program{
         int i = inicio;
         int j = meio + 1;
         while(i <= meio && j <= fim){
-            Verticie v1 = (Verticie)a[i];
-            Verticie v2 = (Verticie)a[j];
+            Verticie? v1 = (Verticie?)a[i];
+            Verticie? v2 = (Verticie?)a[j];
+            if(v1 == null || v2 == null){
+                return;
+            }
             if(v1.getId() < v2.getId()){
                 b.Add(v1);
                 i++;
