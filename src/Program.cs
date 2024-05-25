@@ -117,7 +117,7 @@ public class Program{
                 Console.WriteLine("P " + ver.getId() + " 0 1 " + ver.getId());
             }
             else if(anteriores[ver.getId()] == -1){
-                Console.WriteLine("U" + ver.getId());
+                Console.WriteLine("U " + ver.getId());
             }
             else {
                 ArrayList caminho = new ArrayList();
