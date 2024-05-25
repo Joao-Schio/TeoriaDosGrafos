@@ -150,7 +150,6 @@ public class Program{
         }
         custo[idV] = 0;
         anteriores[idV] = idV;
-        // swap O[0] with O[idV]
         Verticie? aux = (Verticie?)O[0];
         if(aux == null){
             return;
