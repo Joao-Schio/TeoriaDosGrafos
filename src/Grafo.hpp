@@ -32,6 +32,7 @@ class Grafo{
         std::vector<Verticie*> getVerticesVetor();
         void removeArco(int verticie, int vizinho);
         void setVerticieVetor(std::vector<Verticie*> v);
+        ~Grafo();
 };
 
 

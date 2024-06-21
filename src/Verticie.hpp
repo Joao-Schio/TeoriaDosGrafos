@@ -4,14 +4,10 @@
 #include "Arco.hpp"
 
 /**
- * em um grafo orientado com custo as arestas sao definidas pelo trio ordenado
- * (VI, VF, Custo)
- * Onde VI e VF são verticies pertencentes ao conjunto V
- * e o arco se orienta de VI para VF
- * Matemáticamente o custo pode ser qualquer numero pertencente aos reais
- * porém para o contexto desse trabalho ele sempre será um inteiro
- * entre -1000 e 1000
-*/
+ * Desisti da tupla
+ */
+
+
 class Arco;
 class Verticie{
     private:

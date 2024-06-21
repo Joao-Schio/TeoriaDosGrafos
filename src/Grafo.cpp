@@ -107,3 +107,11 @@ void Grafo::removeArco(int verticie, int vizinho){
 void Grafo::setVerticieVetor(std::vector<Verticie*> v){
     this -> vertices = v;
 }
+
+
+Grafo::~Grafo(){
+    // boilerplate
+    for(unsigned i = 0; i < this -> vertices.size(); i++){
+        delete this -> vertices.at(i);
+    }
+}

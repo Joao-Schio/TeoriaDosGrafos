@@ -301,10 +301,18 @@ int main(int argc, char **argv){
     idVerticie = std::stoi(vId);
     Grafo *g = new Grafo();
     leGrafo(nomeArquivo, g);
-    std::vector<Verticie*> anteriores(g -> getNumVertices());
+
+
+    // como esse vetor nao eh um vetor* ele nao precisa de delete explicito
+    std::vector<Verticie*> anteriores(g -> getNumVertices()); 
+    // e os objetos que estao nele vao ser deletados quando o g++ chamar a funcao de destrutor do grafo
+
     std::vector<int> distancias(g -> getNumVertices());
+
     Verticie *v = g -> getVerticie(idVerticie);
+
     bellmanford(g,v,&anteriores,&distancias);
+    
     delete g;
     return 0;
 }
