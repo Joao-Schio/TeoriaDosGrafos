@@ -8,6 +8,23 @@
  * 
  * consideracoes : 
  *     Não use o a implementação do foreach do c++ por que ele é MUITO lento
+ * 
+ * 
+ * 
+ * Consideracoes apos a recorrecao (desculpe a falta de acentos, estou em um SO novo e ainda nao o configurei direito)
+ * 
+ * O problema nao era o mergesort sempre em todos os meus testes ele rodava bem rapido
+ * Eu achava que o problema era a std::tuple mas tambem nao era
+ * 
+ * o problema era que eu fazia um vetor de verticies, e entao sempre que eu acessava um verticie 
+ * ele tinha que passar por um construtor e quando ele saia do escopo um destrutor
+ * entao (nao me pergunte quanto tempo eu demorei pra descobrir isso)
+ * 
+ * mudando as classes para um vetor de ponteiros para verticie cada verticie so passa por um construtor e um destrutor
+ * o que aumenta significativamente a velocidade do programa
+ * 
+ * mas quando eu descobri ja tinha me livrado da tupla entao fica sem msm
+ * 
 */
 
 
