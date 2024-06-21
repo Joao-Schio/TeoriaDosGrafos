@@ -1,6 +1,7 @@
 #include <iostream>
 #include <vector>
-#include <tuple>
+#pragma once
+#include "Arco.hpp"
 
 /**
  * em um grafo orientado com custo as arestas sao definidas pelo trio ordenado
@@ -11,11 +12,11 @@
  * porém para o contexto desse trabalho ele sempre será um inteiro
  * entre -1000 e 1000
 */
-
+class Arco;
 class Verticie{
     private:
         int id; // identificador do verticie
-        std::vector<std::tuple<Verticie,int>> arcos; 
+        std::vector<Arco> arcos; 
         /**
          * ja que o verticie ja tem o seu identificador não é preciso usar um trio ordenado
          * então eu vou usar uma tupla com duas posições como um par ordenado
@@ -27,10 +28,10 @@ class Verticie{
     public:
         Verticie();
         Verticie(int id, int grauEntrada, int grauSaida);
-        Verticie(int id, std::vector<std::tuple<Verticie,int>> arcos);
-        void addArco(std::tuple<Verticie,int> aresta);
+        Verticie(int id, std::vector<Arco> arcos);
+        void addArco(Arco arco);
         int getId();
-        std::vector<std::tuple<Verticie,int>> getArcos();
-        std::vector<std::tuple<Verticie,int>> *getArcosRef();
+        std::vector<Arco> getArcos();
+        std::vector<Arco> *getArcosRef();
         bool igual(Verticie b);
 };

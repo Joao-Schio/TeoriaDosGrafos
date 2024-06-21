@@ -88,10 +88,10 @@ void merge(std::vector<Verticie> &v, int inicio,int meio, int fim){
     }
 }
 
-void imprimeVisitacao(std::vector<Verticie> &O,int iteracao){
+void imprimeVisitacao(std::vector<Verticie*> &O,int iteracao){
     printf("O %d ",iteracao);
     for(unsigned i = 0; i < O.size(); i++){
-        printf("%d ",O.at(i).getId());
+        printf("%d ",O.at(i) -> getId());
     }
     printf("\n");
 }
@@ -113,46 +113,46 @@ void desmarcar(std::vector<bool> &v){
 }
 
 
-void printCaminho(std::vector<Verticie> *anterior, std::vector<int> *custo, Verticie *v, Grafo *g){
-    std::vector<Verticie> todos = g -> getVerticesVetor();
+void printCaminho(std::vector<Verticie*> *anterior, std::vector<int> *custo, Verticie *v, Grafo *g){
+    std::vector<Verticie*> todos = g -> getVerticesVetor();
     //mergesort(todos,0,todos.size() - 1);
     /**
      * grafo.txt não necessariamente tem os vertices em ordem crescente
      * entao na hora da impressão é preciso ordenar
     */
     for(unsigned x = 0; x < todos.size(); x++){
-        Verticie i = todos.at(x);
-        if(i.igual(*v)){
-            printf("P %d 0 1 %d\n",i.getId(),i.getId());
+        Verticie *i = todos.at(x);
+        if(i -> igual(*v)){
+            printf("P %d 0 1 %d\n",i -> getId(),i -> getId());
         }
-        else if(anterior -> at(i.getId()).igual(Verticie())){
-            printf("U %d\n",i.getId());
+        else if(anterior -> at(i -> getId()) -> igual(Verticie())){
+            printf("U %d\n",i -> getId());
         }
-        else if (!i.igual(*v)){
+        else if (!i -> igual(*v)){
             std::vector<int> idCaminho;
-            Verticie aux = anterior -> at(i.getId());
-            while(!aux.igual(*v) && !aux.igual(Verticie())){
-                idCaminho.insert(idCaminho.begin(),aux.getId());
-                aux = anterior -> at(aux.getId());
+            Verticie *aux = anterior -> at(i -> getId());
+            while(!aux -> igual(*v) && !aux -> igual(Verticie())){
+                idCaminho.insert(idCaminho.begin(),aux -> getId());
+                aux = anterior -> at(aux -> getId());
             }
-            printf("P %d %d %ld %d ",i.getId(),custo -> at(i.getId()),idCaminho.size() + 2,v -> getId());
+            printf("P %d %d %ld %d ",i -> getId(),custo -> at(i -> getId()),idCaminho.size() + 2,v -> getId());
             for(int j : idCaminho){
                 printf("%d ",j);
             }
-            printf("%d\n",i.getId());
+            printf("%d\n",i -> getId());
         }
     }
 }
 
 bool cicloNeg(Grafo *g, Verticie *v, std::vector<int> *custo){
     for(unsigned x = 0; x < g -> getNumVertices(); x++){
-        Verticie u = g -> getVerticie(x);
-        std::vector<std::tuple<Verticie,int>> arcos = u.getArcos();
+        Verticie *u = g -> getVerticie(x);
+        std::vector<Arco> arcos = u -> getArcos();
         for(unsigned y = 0; y < arcos.size(); y++){
-            std::tuple<Verticie,int> arco = arcos.at(y);
-            Verticie vArco = std::get<0>(arco);
-            int custoArco = std::get<1>(arco);
-            if(custo -> at(vArco.getId()) > custo -> at(u.getId()) + custoArco){
+            Arco arco = arcos.at(y);
+            Verticie vArco = *(arco.getDestino());
+            int custoArco = arco.getCusto();
+            if(custo -> at(vArco.getId()) > custo -> at(u -> getId()) + custoArco){
                 return true;
             }
         }
@@ -160,37 +160,32 @@ bool cicloNeg(Grafo *g, Verticie *v, std::vector<int> *custo){
     return false;
 }
 
-void podeParar(std::vector<Verticie> &O, int iteracoes, int tamGrafo){
+void podeParar(std::vector<Verticie*> &O, int iteracoes, int tamGrafo){
     for(int i = iteracoes + 1; i < tamGrafo; i++){
         imprimeVisitacao(O,i);
     }
 }
 
-void passaPraFrente(std::vector<Verticie> &O, int pos){
-    Verticie aux = O.at(pos);
+void passaPraFrente(std::vector<Verticie*> &O, int pos){
+    Verticie *aux = O.at(pos);
     for(unsigned i = pos; i > 0; i--){
         O.at(i) = O.at(i - 1);
     }
     O.at(0) = aux;
 }
 
-void bellmanford(Grafo *g, Verticie *v,std::vector<Verticie> *anterior, std::vector<int> *custo){
+void bellmanford(Grafo *g, Verticie *v,std::vector<Verticie*> *anterior, std::vector<int> *custo){
     // Entradas grafo G, verticie de origem V, vetor de verticies que armazena o anterior de um id
     // vetor de custo que armazena o custo da origem ate o verticie com o id 
     for(unsigned i = 0; i < g -> getNumVertices();i++){
-       anterior -> at(i) = Verticie();
+       anterior -> at(i) = new Verticie();
         custo -> at(i) = 200000000; // numero muito maior que o custo maximo
     }
     custo -> at(v -> getId()) = 0;
     // definindo a ordem
-    std::vector<Verticie> O = g -> getVerticesVetor();
-    int idV = 0;
+    std::vector<Verticie*> O = g -> getVerticesVetor();
+    int idV = v -> getId();
     // achando a posicao do verticie V em O
-    for(unsigned i = 0; i < O.size(); i++){
-        if(O.at(i).igual(*v)){
-            idV = i;
-        }
-    }
     // definindo a ordem comecando em V e seguindo em ordem crescente de ID
 
 
@@ -212,22 +207,22 @@ void bellmanford(Grafo *g, Verticie *v,std::vector<Verticie> *anterior, std::vec
         bool entrouNoRedApos = false; // ja que agora estou usando os vetores reduzidos com o tamanho total
         bool entrouNoRed = false; // preciso de uma flag para saber quando eles nao foram definidos para poder parar
         for(unsigned i = 0; i < O.size(); i++){
-            Verticie u = O.at(i);
-            processados.at(u.getId()) = true;
-            std::vector<std::tuple<Verticie,int>> arcos = u.getArcos();
+            Verticie *u = O.at(i);
+            processados.at(u -> getId()) = true;
+            std::vector<Arco> arcos = u -> getArcos();
             for(unsigned j = 0; j < arcos.size(); j++){
-                std::tuple<Verticie,int> arco = arcos.at(j);
-                Verticie vArco = std::get<0>(arco);
-                int custoArco = std::get<1>(arco);
-                if(custo -> at(vArco.getId()) > custo -> at(u.getId()) + custoArco){
-                    custo -> at(vArco.getId()) = custo -> at(u.getId()) + custoArco;
-                    anterior -> at(vArco.getId()) = u;
-                    if(processados.at(vArco.getId())){
-                        reduzidoApos.at(vArco.getId()) = true;
+                Arco arco = arcos.at(j);
+                int idDestino = arco.getIdDestino();
+                int custoArco = arco.getCusto();
+                if(custo -> at(idDestino) > custo -> at(u -> getId()) + custoArco){
+                    custo -> at(idDestino) = custo -> at(u -> getId()) + custoArco;
+                    anterior -> at(idDestino) = u;
+                    if(processados.at(idDestino)){
+                        reduzidoApos.at(idDestino) = true;
                         entrouNoRedApos = true;
                     }
-                    else if(!processados.at(vArco.getId())){ 
-                        reduzidos.at(vArco.getId()) = true;
+                    else if(!processados.at(idDestino)){ 
+                        reduzidos.at(idDestino) = true;
                         entrouNoRed = true;
                     }
                 }
@@ -238,29 +233,29 @@ void bellmanford(Grafo *g, Verticie *v,std::vector<Verticie> *anterior, std::vec
             break;
         }
         int pos = 0;
-        std::vector<Verticie> OLinha(g -> getNumVertices());
+        std::vector<Verticie*> OLinha(g -> getNumVertices());
 
         for(unsigned x = 0; x < O.size(); x++){
-            Verticie i = O.at(x);
-            if(reduzidoApos.at(i.getId())){
+            Verticie *i = O.at(x);
+            if(reduzidoApos.at(i -> getId())){
                 OLinha.at(pos) = i;
-                inserido.at(i.getId()) = true;
+                inserido.at(i -> getId()) = true;
                 pos++;
             }
         }
         for(unsigned x = 0; x < O.size(); x++){
-            Verticie i = O.at(x);
-            if(reduzidos.at(i.getId()) && !inserido.at(i.getId())){
+            Verticie *i = O.at(x);
+            if(reduzidos.at(i -> getId()) && !inserido.at(i -> getId())){
                 OLinha.at(pos) = i;
-                inserido.at(i.getId()) = true;
+                inserido.at(i -> getId()) = true;
                 pos++;
             }
         }
         for(unsigned x = 0; x < O.size(); x++){
-            Verticie i = O.at(x);
-            if(!inserido.at(i.getId())){
+            Verticie *i = O.at(x);
+            if(!inserido.at(i -> getId())){
                 OLinha.at(pos) = i;
-                inserido.at(i.getId()) = true;
+                inserido.at(i -> getId()) = true;
                 pos++;
             }
         }
@@ -289,10 +284,10 @@ int main(int argc, char **argv){
     idVerticie = std::stoi(vId);
     Grafo *g = new Grafo();
     leGrafo(nomeArquivo, g);
-    std::vector<Verticie> anteriores(g -> getNumVertices());
+    std::vector<Verticie*> anteriores(g -> getNumVertices());
     std::vector<int> distancias(g -> getNumVertices());
-    Verticie v = g -> getVerticie(idVerticie);
-    bellmanford(g,&v,&anteriores,&distancias);
+    Verticie *v = g -> getVerticie(idVerticie);
+    bellmanford(g,v,&anteriores,&distancias);
     delete g;
     return 0;
 }
