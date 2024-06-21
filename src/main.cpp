@@ -50,11 +50,11 @@ void leGrafo(std::string nomeArquivo, Grafo *g){
 
 
 
-void merge(std::vector<Verticie> &v, int inicio,int meio, int fim){
+void merge(std::vector<Verticie*> &v, int inicio,int meio, int fim){
     int tamanho1 = meio - inicio + 1;
     int tamanho2 = fim - meio;
-    std::vector<Verticie> aux1(tamanho1);
-    std::vector<Verticie> aux2(tamanho2);
+    std::vector<Verticie*> aux1(tamanho1);
+    std::vector<Verticie*> aux2(tamanho2);
 
     for(int i = 0; i < tamanho1; i++){
         aux1[i] = v.at(i + inicio);
@@ -66,7 +66,7 @@ void merge(std::vector<Verticie> &v, int inicio,int meio, int fim){
     int i = 0, j = 0, k = inicio;
 
     while(i < tamanho1 && j < tamanho2){
-        if(aux1[i].getId() > aux2[j].getId()){
+        if(aux1[i] -> getId() > aux2[j] -> getId()){
             v.at(k) = aux2[j];
             j++;
         }
@@ -96,7 +96,7 @@ void imprimeVisitacao(std::vector<Verticie*> &O,int iteracao){
     printf("\n");
 }
 
-void mergesort(std::vector<Verticie> &v, int inicio, int fim){
+void mergesort(std::vector<Verticie*> &v, int inicio, int fim){
     if(fim > inicio){
         int meio = (fim + inicio) / 2;
         mergesort(v,inicio,meio);
@@ -115,7 +115,7 @@ void desmarcar(std::vector<bool> &v){
 
 void printCaminho(std::vector<Verticie*> *anterior, std::vector<int> *custo, Verticie *v, Grafo *g){
     std::vector<Verticie*> todos = g -> getVerticesVetor();
-    //mergesort(todos,0,todos.size() - 1);
+    mergesort(todos,0,todos.size() - 1);
     /**
      * grafo.txt não necessariamente tem os vertices em ordem crescente
      * entao na hora da impressão é preciso ordenar
@@ -195,7 +195,7 @@ void bellmanford(Grafo *g, Verticie *v,std::vector<Verticie*> *anterior, std::ve
     std::vector<bool> reduzidoApos(g -> getNumVertices());
     std::vector<bool> inserido(g -> getNumVertices());
 
-    //mergesort(O,1,O.size() - 1);
+    mergesort(O,1,O.size() - 1);
     long iteracoes = 0;
     while(iteracoes < g -> getNumVertices()){
         imprimeVisitacao(O,iteracoes);
