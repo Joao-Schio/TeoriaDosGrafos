@@ -55,8 +55,8 @@ void Grafo::addVerticie(int id, int grauEntrada, int grauSaida){
 }
 
 void Grafo::addArco(int id, int idFim, int custo){
-    Verticie *origem;
-    Verticie *fim;
+    Verticie *origem = new Verticie(); // coloquei essa linnha para warning de inicializacao
+    Verticie *fim = new Verticie(); // para poder usar  o -O3 do gcc, mas nao precisa mais pq o codigo ja esta rapiido o suficiente
     for(unsigned i = 0; i < this -> vertices.size(); i++){
         if(this -> vertices.at(i) -> getId() == id){
             origem = this -> vertices.at(i);
