@@ -70,8 +70,10 @@ void leGrafo(std::string nomeArquivo, Grafo *g){
 void merge(std::vector<Verticie*> &v, int inicio,int meio, int fim){
     int tamanho1 = meio - inicio + 1;
     int tamanho2 = fim - meio;
-    std::vector<Verticie*> aux1(tamanho1);
-    std::vector<Verticie*> aux2(tamanho2);
+    Verticie **aux1;
+    Verticie **aux2;
+    aux1 = new Verticie*[tamanho1];
+    aux2 = new Verticie*[tamanho2];
 
     for(int i = 0; i < tamanho1; i++){
         aux1[i] = v.at(i + inicio);
@@ -103,6 +105,8 @@ void merge(std::vector<Verticie*> &v, int inicio,int meio, int fim){
         i++;
         k++;
     }
+    delete [] aux1;
+    delete [] aux2;
 }
 
 void imprimeVisitacao(std::vector<Verticie*> &O,int iteracao){
@@ -137,6 +141,27 @@ void printCaminho(std::vector<Verticie*> *anterior, std::vector<int> *custo, Ver
      * grafo.txt não necessariamente tem os vertices em ordem crescente
      * entao na hora da impressão é preciso ordenar
     */
+
+   /**
+    * Exemplo
+    * se o grafo g-5-6.txt fosse
+    *       I 5 6
+            N 0 1 2
+            N 2 1 1
+            N 3 2 1
+            N 1 1 1
+            N 4 1 1
+            E 0 1 5
+            E 0 4 3
+            E 1 2 1
+            E 2 3 3
+            E 3 0 1
+            E 4 3 1
+            T
+        Com o N 1 1 1 apos os vertices 0 2 3 os prints nao estariam certos
+    */
+
+
     for(unsigned x = 0; x < todos.size(); x++){
         Verticie *i = todos.at(x);
         if(i -> igual(*v)){
@@ -201,12 +226,21 @@ void bellmanford(Grafo *g, Verticie *v,std::vector<Verticie*> *anterior, std::ve
     custo -> at(v -> getId()) = 0;
     // definindo a ordem
     std::vector<Verticie*> O = g -> getVerticesVetor();
-    int idV = v -> getId();
+    
     // achando a posicao do verticie V em O
     // definindo a ordem comecando em V e seguindo em ordem crescente de ID
 
+    int idV = -1;
+    for(unsigned i = 0; i < O.size() && idV == -1; i++){
+        if(O.at(i) -> igual(*v)){
+            idV = i;
+        }
+    }
+    Verticie *aux = O.at(0);
+    O.at(0) = O.at(idV);
+    O.at(idV) = aux;
+    mergesort(O,1,O.size() - 1);
 
-    passaPraFrente(O,idV);
     std::vector<bool> processados(g -> getNumVertices());
     std::vector<bool> reduzidos(g -> getNumVertices());
     std::vector<bool> reduzidoApos(g -> getNumVertices());
