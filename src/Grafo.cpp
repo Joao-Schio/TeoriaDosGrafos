@@ -58,31 +58,14 @@ int Grafo::getNumVertices(){
 
 
 Verticie* Grafo::getVerticie(int id){
-
-    for(unsigned i = 0; i < this -> vertices.size(); i++){
-        if(this -> vertices.at(i) -> getId() == id){
-            return (this -> vertices.at(i));
-        }
-    }
-    return nullptr;
+    // como na insercao o vetor é tratado como uma tabela de dispersão
+    // pode-se considerar que v[i] = VerticeI
+    return (this -> vertices.at(id));
 }
 
 std::vector<Verticie*> Grafo::getVerticesVetor(){
     // coloquei o nome de vetor para deixar mais clara a diferenca entre o nome das funcoes
     return this -> vertices;
-}
-
-void Grafo::removeArco(int verticie, int vizinho){
-    for(unsigned i = 0; i < this -> vertices.size(); i++){
-        if(this -> vertices.at(i) -> getId() == verticie){
-            std::vector<Arco> *arcos = vertices.at(i) -> getArcosRef();
-            for(unsigned j = 0; j < arcos -> size(); j++){
-                if(arcos -> at(j).getDestino() -> getId() == vizinho){
-                    arcos -> erase(arcos -> begin() + j);
-                }
-            }
-        }
-    }
 }
 
 void Grafo::setVerticieVetor(std::vector<Verticie*> v){

@@ -26,12 +26,13 @@
 #include <iostream>
 #include "Grafo.hpp"
 
-void leGrafo(std::string nomeArquivo, Grafo **g){
+Grafo* leGrafo(std::string nomeArquivo){
     FILE *arquivo = fopen(nomeArquivo.c_str(), "r");
     if(arquivo == NULL){
         std::cout << "E" << std::endl;
         exit(1);
     }
+    Grafo *g = nullptr;
     char inicio = 'i';
     while(fscanf(arquivo, "%c", &inicio) != EOF){
         /**
@@ -42,25 +43,41 @@ void leGrafo(std::string nomeArquivo, Grafo **g){
         if(inicio == 'I'){
             int verticies,arcos;
             fscanf(arquivo, "%d %d", &verticies, &arcos);
-            *g = new Grafo(verticies,arcos);
+            g = new Grafo(verticies,arcos);
         }
 
         else if(inicio == 'N'){
             int id, gEntrada, gSaida;
             fscanf(arquivo, "%d %d %d", &id, &gEntrada, &gSaida);
-            (*g) -> addVerticie(id,gEntrada, gSaida);
+
+            if(g == nullptr){
+                std::cout << "E" << std::endl;
+                exit(1);
+            }
+            else{
+                g -> addVerticie(id,gEntrada, gSaida);
+            }
         }
 
         else if(inicio == 'E'){
             int id, vizinho, custo;
             fscanf(arquivo, "%d %d %d", &id, &vizinho, &custo);
-            (*g) -> addArco(id,vizinho,custo);
+
+            if(g == nullptr){
+                std::cout << "E" << std::endl;
+                exit(1);
+            }
+
+            else{
+                g -> addArco(id,vizinho,custo);
+            }
         }
         else if(inicio == 'T'){
             break;
         }
     }
     fclose(arquivo);
+    return g;
 }
 
 void imprimeVisitacao(std::vector<Verticie*> &O,int iteracao){
@@ -168,8 +185,8 @@ void bellmanford(Grafo *g, Verticie *v,std::vector<Verticie*> *anterior, std::ve
         desmarcar(reduzidoApos);
         desmarcar(inserido);
 
-        bool entrouNoRedApos = false; // ja que agora estou usando os vetores reduzidos com o tamanho total
-        bool entrouNoRed = false; // preciso de uma flag para saber quando eles nao foram definidos para poder parar
+        bool entrouNoRedApos = false; 
+        bool entrouNoRed = false; 
         for(unsigned i = 0; i < O.size(); i++){
             Verticie *u = O.at(i);
             processados.at(u -> getId()) = true;
@@ -247,10 +264,7 @@ int main(int argc, char **argv){
     std::string vId = argv[2];
     idVerticie = std::stoi(vId);
 
-    // g comeca como nullptr pois ele vai ser iniciado na funcao de ler grafo
-    Grafo *g = nullptr;
-
-    leGrafo(nomeArquivo, &g);
+    Grafo *g = leGrafo(nomeArquivo);
 
 
     // como esse vetor nao eh um vetor* ele nao precisa de delete explicito
@@ -264,5 +278,7 @@ int main(int argc, char **argv){
     bellmanford(g,v,&anteriores,&distancias);
     
     delete g;
+    anteriores.clear();
+    distancias.clear();
     return 0;
 }
