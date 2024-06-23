@@ -17,17 +17,16 @@ class Grafo{
 
         std::vector<Verticie*> vertices; // Conjunto de verticies
         int numVertices; // Ordem do grafo
-        int numArestas; 
+        int numArcos; 
     
     public:
-        Grafo();
-        void addVerticie(int id, std::vector<Arco> vizinhos);
+        Grafo(int vertices, int arcos);
         void addVerticie(int id, int grauEntrada, int grauSaida);
         void setNumVertices(int numVertices);
-        void setNumArestas(int numArestas);
+        void setNumArcos(int numArestas);
         void addArco(int id, int idFim, int custo);
         void printVertices(); 
-        unsigned int getNumVertices();
+        int getNumVertices();
         Verticie* getVerticie(int id);
         std::vector<Verticie*> getVerticesVetor();
         void removeArco(int verticie, int vizinho);

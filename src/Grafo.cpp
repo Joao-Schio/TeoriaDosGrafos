@@ -5,23 +5,12 @@
 
 
 
-Grafo::Grafo(){
-    /**
-     * definicao vazia
-    */
-    numVertices = 0;
-    numArestas = 0;
+Grafo::Grafo(int vertices, int arcos){
+    this -> numArcos = arcos;
+    this -> numVertices = vertices;
+    this -> vertices  = std::vector<Verticie*>(numVertices);
 }
 
-void Grafo::addVerticie(int id, std::vector<Arco> vizinhos){
-    /**
-     * funcao basica para adicionar verticies
-    */
-    Verticie *v = new Verticie(id, vizinhos);
-    vertices.push_back(v);
-    numVertices = vertices.size();
-    numArestas += vizinhos.size(); 
-}
 
 void Grafo::printVertices(){
     /**
@@ -42,35 +31,27 @@ void Grafo::setNumVertices(int numVertices){
     this -> numVertices = numVertices;
 }
 
-void Grafo::setNumArestas(int numArestas){
+void Grafo::setNumArcos(int numArestas){
     // boilerplate
-    this -> numArestas = numArestas;
+    this -> numArcos = numArestas;
 }
 
 void Grafo::addVerticie(int id, int grauEntrada, int grauSaida){
     // funcao basica para adicionar um verticie
     Verticie *v = new Verticie(id, grauEntrada, grauSaida);
-    this -> vertices.push_back(v);
+    this -> vertices.at(v -> getId()) = v;
     this -> numVertices = vertices.size();
 }
 
 void Grafo::addArco(int id, int idFim, int custo){
-    Verticie *origem = nullptr; // coloquei essa linnha para nao ter warning de inicializacao
-    Verticie *fim = nullptr; // para poder usar  o -O3 do gcc, mas nao precisa mais pq o codigo ja esta rapiido o suficiente
-    for(unsigned i = 0; i < this -> vertices.size(); i++){
-        if(this -> vertices.at(i) -> getId() == id){
-            origem = this -> vertices.at(i);
-        }
-        if(this -> vertices.at(i) -> getId() == idFim){
-            fim = this -> vertices.at(i);
-        }
-    }
+    Verticie *origem = this -> vertices.at(id);
+    Verticie *fim = this -> vertices.at(idFim);
     Arco arco(fim, custo);
     origem -> addArco(arco);
-    this -> numArestas++;
+    // Nao vou aumentar o numero de arcos pois o construtor padrao ja define ele levando em consideração todos os arcos
 }
 
-unsigned int Grafo::getNumVertices(){
+int Grafo::getNumVertices(){
     // boilerplate
     return this -> numVertices;
 }

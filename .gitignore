@@ -8,3 +8,4 @@ main
 */main
 *.out
 */*.out 
+*.log

@@ -68,3 +68,23 @@ echo "g-1000-10000 812 passou"
 ./pccm g-1000-10000.txt 963 >out.txt
 diff out.txt "g-1000-10000-963.out" -w
 echo "g-1000-10000 passou"
+./pccm "g-25-75.txt" 8 > out.txt
+diff out.txt "g-25-75-8.log" -w
+echo "g-25-75 passou"
+./pccm "g-50-1500.txt" 28 > out.txt
+diff out.txt "g-50-1500-28.log" -w
+echo "g-50-1500 passou"
+./pccm "g-25-500.txt" 8 > out.txt
+diff out.txt "g-25-500-8.log" -w
+echo "g-25-500 passou"
+./pccm "g-500-50000.txt" 328 > out.txt
+diff out.txt "g-500-50000-328.log" -w
+echo "g-500-50000 passou"
+./pccm "g-200-10000.txt" 128 > out.txt
+diff out.txt "g-200-10000-128.log" -w
+echo "g-200-10000 passou"
+./pccm "g-200-2000.txt" 128 > out.txt
+diff out.txt "g-200-2000-128.log" -w
+echo "g-200-2000 passou"
+
+
