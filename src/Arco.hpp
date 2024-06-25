@@ -1,5 +1,4 @@
-#ifndef ARCO_HPP  
-#define ARCO_HPP
+#pragma once // para evitar usar ifndef e endif
 #include "Verticie.hpp"
 
 
@@ -19,5 +18,3 @@ class Arco{
         void setCusto(int custo);
         int getIdDestino();
 };
-
-#endif
