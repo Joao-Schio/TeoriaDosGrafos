@@ -15,21 +15,21 @@ class Grafo{
 
     private:
 
-        std::vector<Verticie> vertices; // Conjunto de verticies
+        std::vector<Verticie*> vertices; // Conjunto de verticies
         int numVertices; // Ordem do grafo
         int numArestas; 
     
     public:
         Grafo();
-        void addVerticie(int id, std::vector<std::tuple<Verticie,int>> vizinhos);
+        void addVerticie(int id, std::vector<std::tuple<Verticie*,int>> vizinhos);
         void addVerticie(int id, int grauEntrada, int grauSaida);
         void setNumVertices(int numVertices);
         void setNumArestas(int numArestas);
         void addArco(int id, int idFim, int);
         void printVertices(); 
         unsigned int getNumVertices();
-        Verticie getVerticie(int id);
-        std::vector<Verticie> getVerticesVetor();
+        Verticie* getVerticie(int id);
+        std::vector<Verticie*>& getVerticesVetor();
         void removeArco(int verticie, int vizinho);
         void setVerticieVetor(std::vector<Verticie> v);
 };

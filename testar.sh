@@ -3,7 +3,7 @@ set -e
 
 # define an int var
 declare -i i=0
-g++ src/*.cpp -o pccm -Wall -Werror -std=c++20
+#g++ src/*.cpp -o pccm -Wall -Werror -std=c++20 -O3
 
 for variable in {0..4}
 do
@@ -63,15 +63,17 @@ echo "g-1000-10000 31 passou"
 diff out.txt "g-1000-10000-265.out" -w
 echo "g-1000-10000 265 passou"
 ./pccm g-1000-10000.txt 403 > out.txt
-diff out.out "g-1000-10000-403.out" -w
+diff out.txt "g-1000-10000-403.out" -w
 echo "g-1000-10000 403 passou"
-./pccm g-1000-10000.txt 697
+./pccm g-1000-10000.txt 697 > out.txt
 diff out.txt "g-1000-10000-697.out" -w
 echo "g-1000-10000 697 passou"
-./pccm g-1000-10000.txt 812
+./pccm g-1000-10000.txt 812 >  out.txt
 diff out.txt "g-1000-10000-812.out" -w
-./pccm g-1000-10000.txt 963
+echo "g-1000-10000 812 passou"
+./pccm g-1000-10000.txt 963 > out.txt
 diff out.txt "g-1000-10000-963.out" -w
+echo "g-1000-10000 963 passou"
 echo "g-1000-10000 passou"
 
 
