@@ -9,3 +9,8 @@ main
 *.out
 */*.out 
 *.log
+
+
+# Added by cargo
+
+/target
