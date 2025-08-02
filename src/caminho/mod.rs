@@ -1,4 +1,4 @@
-use std::fmt::Display;
+use std::fmt:: Display;
 
 
 
@@ -27,22 +27,30 @@ impl Caminho {
     pub fn set_custo(&mut self, custo : i32){
         self.custo = custo
     }
+
+    pub fn pronto(&mut self){
+        self.verticies.reverse();
+    }
 }
 
 
 impl Display for Caminho{
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
 
+        if self.fim == self.inicio{
+            write!(f, "P {} 0 1 {}", self.inicio, self.inicio)?;
+            return Ok(());
+        }
+
         if self.verticies.len() == 0{
-            write!(f, "U")?;
+            write!(f, "U {}", self.fim)?;
             return Ok(());
         }
         
         write!(f, "P ")?;
         write!(f, "{} ", self.fim)?;
         write!(f, "{} ", self.custo)?;
-        write!(f, "{} ", self.verticies.len() + 2)?;
-        write!(f, "{} ", self.inicio)?;
+        write!(f, "{} ", self.verticies.len() + 1)?;
         for i in &self.verticies{
             write!(f, "{} ", i)?;
         }

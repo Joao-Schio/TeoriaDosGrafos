@@ -49,13 +49,19 @@ fn main() {
     let path = args[1].as_str();
     let verticie = args[2].trim().parse().expect("Falta o verticie de destino");
 
-
     let g = get_grafo(&path);
     match g {
         Ok(grafo) => {
             let cam = bellmanford::bellmanford(verticie, &grafo);
-            for i in &cam{
-                println!("{}", i);
+            match cam{
+                Some(caminhos) => {
+                    for i in caminhos{
+                        println!("{}", i);
+                    }
+                }
+                None => {
+                    println!("C");
+                }
             }
         }
         Err(e) => {

@@ -3,71 +3,127 @@ use std::i32;
 
 use crate::{caminho::Caminho, grafo::Grafo};
 
-#[derive(Clone, Copy, PartialEq, Eq)]
+#[derive(Clone, Copy, PartialEq, Eq, Debug)]
 enum Ant{
     Tem(usize),
     NaoTem
 }
 
-fn print_vec<T : std::fmt::Display>(vet : &Vec<T>){
-    for i in vet{
+#[inline(always)]
+fn print_vec<T : std::fmt::Display>(vet : &[T], num_it : usize){
+    print!("O {} ", num_it);
+    for i in &vet[0..vet.len() - 1]{
         print!("{} ", i);
     }
-    println!();
+    println!("{}", vet[vet.len() - 1]);
 }
 
+fn desmarcar(vet : &mut Vec<bool>){
+    for i in vet{
+        *i = false;
+    }
+}
 
-pub fn bellmanford(verticie : u32, grafo : &Grafo) -> Vec<Caminho>{
+fn ciclo_neg(grafo : &Grafo, custos : &[i32]) -> bool{
+    for i in 0..grafo.get_tamanho(){
+        let v = grafo.get_verticies(i as u32);
+        for a in v.get_arestas(){
+            let dest = a.get_destino();
+            let custo = a.get_custo();
+            if custos[dest as usize] > custos[v.get_id() as usize] + custo{
+                return true;
+            }
+        }
+    }
+    false
+}
+
+pub fn bellmanford(verticie : u32, grafo : &Grafo) -> Option<Vec<Caminho>>{
     let tamanho_grafo = grafo.get_tamanho();
 
     let mut saida = Vec::with_capacity(tamanho_grafo);
 
-    let mut custos = vec![i32::MAX ; tamanho_grafo];
+    let mut custos = vec![i32::MAX / 16 ; tamanho_grafo];
     let mut anterior = vec![Ant::NaoTem; tamanho_grafo];
 
     let mut ordem : Vec<u32> = (0..tamanho_grafo as u32).collect();
     let mut visitados = vec![false ; tamanho_grafo];
     let mut reduzidos = vec![false; tamanho_grafo];
+    let mut reduzidosApos = vec![false; tamanho_grafo];
+    let mut inseridos = vec![false; tamanho_grafo];
     ordem.swap(verticie as usize, 0);
     ordem[1..].sort();
     
     custos[verticie as usize] = 0;
     let mut count = 0;
     loop{
-        print_vec(&ordem);
-        visitados.fill(false);
-        let mut prox : Vec<u32>  = Vec::with_capacity(tamanho_grafo);
-        let mut melhorou = false;
-        for verticie in &ordem{
-            let u = grafo.get_verticies(*verticie);
-            let u_id  = u.get_id() as usize;
-            visitados[u_id]  = true;
-            for aresta in u.get_arestas(){
-                let v = aresta.get_destino() as usize;
-                if custos[u_id] + aresta.get_custo() < custos[v]{
-                    custos[v] = custos[u_id] + aresta.get_custo();
-                    anterior[v] = Ant::Tem(u_id);
-                    reduzidos[v] = true;
-                    if !visitados[v]{
-                        prox.push(v as u32);
+        if count == tamanho_grafo{
+            break;
+        }
+        
+        print_vec(&ordem, count);
+        desmarcar(&mut visitados);
+        desmarcar(&mut reduzidos);
+        desmarcar(&mut reduzidosApos);
+        desmarcar(&mut inseridos);
+        let mut entrouRedApos = false;
+        let mut entrouRed = false;
+
+        for i in &ordem{
+            let u = grafo.get_verticies(*i);
+            visitados[*i as usize] = true;
+            for a in u.get_arestas(){
+                let id_dest = a.get_destino();
+                let custo = a.get_custo();
+                if custos[id_dest as usize] > custos[*i as usize] + custo{
+                    custos[id_dest as usize] = custos[*i as usize] + custo;
+                    anterior[id_dest as usize] = Ant::Tem(*i as usize);
+                    if visitados[id_dest as usize]{
+                        reduzidosApos[id_dest as usize] = true;
+                        entrouRedApos = true;
                     }
-                    melhorou = true;
+                    else if !visitados[id_dest as usize]{
+                        reduzidos[id_dest as usize] = true;
+                        entrouRed = true;
+                    }
                 }
             }
         }
-        for &v_id in &ordem {
-            let v = v_id as usize;
-            if !reduzidos[v] && !prox.contains(&v_id) {
-                prox.push(v_id)
+        if !entrouRed && !entrouRedApos{
+            for i in (count + 1)..tamanho_grafo{
+                print_vec(&ordem, i);
+            }
+            break;
+        }
+
+        let mut prox = Vec::with_capacity(tamanho_grafo);
+
+        for i in &ordem{
+            if reduzidosApos[*i as usize]{
+                prox.push(*i);
+                inseridos[*i as usize] = true;
+            }
+        }
+
+        for i in &ordem{
+            if reduzidos[*i as usize] && ! inseridos[*i as usize]{
+                prox.push(*i);
+                inseridos[*i as usize] = true;
+            }
+        }
+
+        for i in &ordem{
+            if !inseridos[*i as usize]{
+                prox.push(*i);
             }
         }
         ordem = prox;
-
-        if count < tamanho_grafo - 1 && !melhorou || count == tamanho_grafo - 1{
-            break;
-        }
-        count += 1;
+        count += 1
     }   
+
+    if ciclo_neg(grafo, &custos){
+        return None;
+    }
 
     for i in 0..tamanho_grafo{
         let mut cam = Caminho::new(verticie, i as u32);
@@ -83,7 +139,9 @@ pub fn bellmanford(verticie : u32, grafo : &Grafo) -> Vec<Caminho>{
                 }
             }
         }
+        cam.set_custo(custos[i]);
+        cam.pronto();
         saida.push(cam);
     }
-    saida
+    Some(saida)
 }
