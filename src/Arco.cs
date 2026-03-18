@@ -7,27 +7,8 @@ using verticie;
 
 
 
-class Arco{
-    Verticie destino;
-    int custo;
-
-
-    public Arco(){
-        this.destino = new Verticie();
-        this.custo = -1;
-    }
-
-    public Arco(Verticie verticie, int custo){
-        this.destino = verticie;
-        this.custo = custo;
-    }
-
-    public int getCusto(){
-        return this.custo;
-    }
-
-    public Verticie getDestino(){
-        return this.destino;
-    }
+struct Arco(Verticie verticie, int custo) {
+    public Verticie Destino { get; set; } = verticie;
+    public int Custo { get; set; } = custo;
 
 }

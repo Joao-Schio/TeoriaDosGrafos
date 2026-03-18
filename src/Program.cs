@@ -4,57 +4,11 @@
 
 
 using grafo;
-
-using System.IO;
-using System.Numerics;
-using System;
 using System.Collections;
 using verticie;
 using arco;
-using System.Runtime.Serialization;
 public class Program{
-
-    static void merge(ArrayList a, int inicio, int meio, int fim){
-        ArrayList b = new ArrayList();
-        int i = inicio;
-        int j = meio + 1;
-        while(i <= meio && j <= fim){
-            Verticie? v1 = (Verticie?)a[i];
-            Verticie? v2 = (Verticie?)a[j];
-            if(v1 == null || v2 == null){
-                return;
-            }
-            if(v1.getId() < v2.getId()){
-                b.Add(v1);
-                i++;
-            }
-            else{
-                b.Add(v2);
-                j++;
-            }
-        }
-        while(i <= meio){
-            b.Add(a[i]);
-            i++;
-        }
-        while(j <= fim){
-            b.Add(a[j]);
-            j++;
-        }
-        for(int k = inicio; k <= fim; k++){
-            a[k] = b[k - inicio];
-        }
-    }
-    static void mergesort(ArrayList a, int inicio, int fim){
-        if(inicio < fim){
-            int meio = (inicio + fim) / 2;
-            mergesort(a,inicio,meio);
-            mergesort(a,meio + 1, fim);
-            merge(a,inicio,meio,fim);
-        }   
-    }
-
-    static void podeParar(ArrayList O, int iteracao, Grafo g){
+    static void podeParar(IEnumerable<Verticie> O, int iteracao, Grafo g){
         for(int i = iteracao + 1; i < g.getNumVerticies(); i++){
             printO(O,i);
         }
@@ -86,22 +40,22 @@ public class Program{
             }
         }
     }
-    static void printO(ArrayList O, int iteracao){
+    static void printO(IEnumerable<Verticie> O, int iteracao){
         Console.Write("O " + iteracao + " ");
-        foreach(Verticie v in O){
-            Console.Write(v.getId() + " ");
+        foreach(var v in O){
+            Console.Write(v.Id + " ");
         }
         Console.WriteLine();
     }
     static bool cicloNegativo(Grafo g, int[] custo){
         foreach(Verticie v in g.getVerticies()){
-            ArrayList arcos = v.getArcos();
+            var arcos = v.Arcos;
             foreach(Arco a in arcos){
-                Verticie? u = a.getDestino();
+                Verticie? u = a.Destino;
                 if(u == null){
                     return false;
                 }
-                if(custo[u.getId()] > custo[v.getId()] + a.getCusto()){
+                if(custo[u.Id] > custo[v.Id] + a.Custo){
                     return true;
                 }
             }
@@ -110,28 +64,29 @@ public class Program{
     }
 
     static void printaCaminho(int[] anteriores, int[] custo, Verticie v, Grafo g){
-        ArrayList todos = g.getVerticies();
-        mergesort(todos,0,todos.Count - 1);
+        var todos = g.getVerticies();
+        todos.Sort();
+
         foreach (Verticie ver in todos){
-            if(ver.getId() == v.getId()){
-                Console.WriteLine("P " + ver.getId() + " 0 1 " + ver.getId());
+            if(ver.Id == v.Id){
+                Console.WriteLine("P " + ver.Id + " 0 1 " + ver.Id);
             }
-            else if(anteriores[ver.getId()] == -1){
-                Console.WriteLine("U " + ver.getId());
+            else if(anteriores[ver.Id] == -1){
+                Console.WriteLine("U " + ver.Id);
             }
             else {
-                ArrayList caminho = new ArrayList();
-                int ant = anteriores[ver.getId()];
-                while(ant != v.getId() && ant != -1){
+                var caminho = new List<int>();
+                int ant = anteriores[ver.Id];
+                while(ant != v.Id && ant != -1){
                     caminho.Insert(0,ant);
                     ant = anteriores[ant];
                 }
                 int tamanho = caminho.Count + 2;
-                Console.Write("P " + ver.getId() +  " " + custo[ver.getId()] + " " + tamanho + " " + v.getId());
+                Console.Write("P " + ver.Id +  " " + custo[ver.Id] + " " + tamanho + " " + v.Id);
                 foreach(int i in caminho){
                     Console.Write(" " + i);
                 }
-                Console.WriteLine(" " + ver.getId());
+                Console.WriteLine(" " + ver.Id);
             }
         }
     }
@@ -140,11 +95,11 @@ public class Program{
             anteriores[i] = -1;
             custo[i] = 2000000;
         }
-        ArrayList O = g.getVerticies();
+        var O = g.getVerticies();
         int idV = 0;
         foreach(Verticie ver in O){
-            if(ver.getId() == v.getId()){
-                idV = ver.getId();
+            if(ver.Id == v.Id){
+                idV = ver.Id;
                 break;
             }
         }
@@ -156,7 +111,7 @@ public class Program{
         }
         O[0] = O[idV];
         O[idV] = aux;
-        mergesort(O,1,O.Count - 1);
+        O.Sort(1, O.Count - 1, null);
         int iteracoes = 0;
         do{
             printO(O,iteracoes);
@@ -172,35 +127,35 @@ public class Program{
                 reduzidosApos[i] = false;
             }
             foreach(Verticie u in O){
-                processados[u.getId()] = true;
-                ArrayList arcos = u.getArcos();
+                processados[u.Id] = true;
+                var arcos = u.Arcos;
                 foreach(Arco a in arcos){
-                    Verticie? ver = a.getDestino();
+                    Verticie? ver = a.Destino;
                     if(ver == null){
                         return;
                     }
-                    if(custo[ver.getId()] > custo[u.getId()] + a.getCusto()){
-                        custo[ver.getId()] = custo[u.getId()] + a.getCusto();
-                        anteriores[ver.getId()] = u.getId();
-                        if(!processados[ver.getId()]){
-                            reduzidos[ver.getId()] = true;
+                    if(custo[ver.Id] > custo[u.Id] + a.Custo){
+                        custo[ver.Id] = custo[u.Id] + a.Custo;
+                        anteriores[ver.Id] = u.Id;
+                        if(!processados[ver.Id]){
+                            reduzidos[ver.Id] = true;
                             red = true;
                         }
                         else{
-                            reduzidosApos[ver.getId()] = true;
+                            reduzidosApos[ver.Id] = true;
                             redApos = true;
                         }
                     }
                 }
             }
-            ArrayList OLinha = new ArrayList();
+            var OLinha = new List<Verticie>();
             foreach(Verticie w in O){
-                if(reduzidosApos[w.getId()]){
+                if(reduzidosApos[w.Id]){
                     OLinha.Add(w);
                 }
             }
             foreach(Verticie w in O){
-                if(reduzidos[w.getId()] && !OLinha.Contains(w)){
+                if(reduzidos[w.Id] && !OLinha.Contains(w)){
                     OLinha.Add(w);
                 }
             }
@@ -238,11 +193,7 @@ public class Program{
         }
         Grafo g = new Grafo();
         leGrafo(arquivo,g);
-        Verticie? v = g.getVerticie(id);
-         if(v == null){
-            throw new Exception("Erro");
-         }
-
+        Verticie? v = g.getVerticie(id) ?? throw new Exception("Erro");
         int []anteriores = new int[g.getNumVerticies()];
         int []custo = new int[g.getNumVerticies()];
 

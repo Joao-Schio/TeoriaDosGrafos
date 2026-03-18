@@ -7,3 +7,6 @@ main
 src/bin/
 src/obj/
 *.out
+*.log
+/target/
+pccm

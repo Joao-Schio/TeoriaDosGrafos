@@ -10,12 +10,12 @@ using verticie;
 
 
 class Grafo{
-    ArrayList verticies;
+    List<Verticie> verticies;
     int numVerticies;
     int numArestas;
 
     public Grafo(){
-        this.verticies = new ArrayList();
+        this.verticies = new ();
         this.numArestas = 0;
         this.numVerticies = 0;
     }
@@ -23,7 +23,7 @@ class Grafo{
     public Grafo(int numArestas, int numVerticies){
         this.numArestas = numArestas;
         this.numVerticies = numVerticies;
-        this.verticies =  new ArrayList();
+        this.verticies =  new ();
     }
 
     public void addVerticie(int id, int grauEntrada, int grauSaida){
@@ -32,7 +32,7 @@ class Grafo{
     }
     public Verticie? getVerticie(int id){
         foreach(Verticie v in verticies){
-            if(v.getId() == id){
+            if(v.Id == id){
                 return v;
             }
         }
@@ -43,14 +43,14 @@ class Grafo{
         if(fim != null){
             Arco a = new Arco(fim, custo);
             foreach(Verticie v in verticies){
-                if(v.getId() == origem){
+                if(v.Id == origem){
                     v.addArco(a);
                 }
             }
         }
     }
 
-    public ArrayList getVerticies(){
+    public List<Verticie> getVerticies(){
         return this.verticies;
     }
 
@@ -63,10 +63,10 @@ class Grafo{
 
     public void print(){
         foreach(Verticie v in verticies){
-            Console.WriteLine("Verticie: " + v.getId());
-            ArrayList arcos = v.getArcos();
+            Console.WriteLine("Verticie: " + v.Id);
+            var arcos = v.Arcos;
             foreach(Arco a in arcos){
-                Console.WriteLine("Arco: " + a.getDestino().getId() + " Custo: " + a.getCusto());
+                Console.WriteLine("Arco: " + a.Destino.Id + " Custo: " + a.Custo);
             }
         }
     }

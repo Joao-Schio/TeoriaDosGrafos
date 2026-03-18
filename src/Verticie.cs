@@ -9,45 +9,21 @@ namespace verticie;
 
 
 
-class Verticie{
-    int id;
-    int grauEntrada;
-    int grauSaida;
-    ArrayList arcos;
-
-    public Verticie(){
-        this.id = -1;
-        this.grauEntrada = 0;
-        this.grauSaida = 0;
-        this.arcos = new ArrayList();
-    }
-
-    public Verticie(int id, int grauEntrada, int grauSaida){
-        this.id = id;
-        this.grauEntrada = grauEntrada;
-        this.grauSaida = grauSaida;
-        this.arcos = new ArrayList();;
-    }
-
-    public void addArco(Verticie destino, int custo){
-        Arco novo = new Arco(destino,custo);
-        arcos.Add(novo);
-    }
-
+record Verticie(int id, int grauEntrada, int grauSaida) : IComparable<Verticie> {
+    public int Id { get; init; } = id;
+    public int GrauEntrada {get; init; } = grauEntrada;
+    public int GrauSaida {get; init; } = grauSaida;
+    public List<Arco> Arcos {get; init; } = new();
     public void addArco(Arco arco){
-        this.arcos.Add(arco);
-    }
-
-    public int getId(){
-        return this.id;
-    }
-    public ArrayList getArcos(){
-        return this.arcos;
+        this.Arcos.Add(arco);
     }
 
     // how to add compare so that the sort function can be used
-    public bool Comparer(Verticie v){
-        return v.getId() < this.id;
+    public int CompareTo(Verticie? v) {
+        if (v is null) {
+            return 1; 
+        }
+        return this.Id - v.Id;
     }
 
 }
